@@ -25,6 +25,8 @@ WORKDIR /app
 EXPOSE 5048
 EXPOSE 7048
 EXPOSE 8080
+EXPOSE 80
+EXPOSE 443
 # Copy the build artifacts
 COPY --from=build /app/publish .
 

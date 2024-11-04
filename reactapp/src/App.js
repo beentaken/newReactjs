@@ -6,7 +6,7 @@ import About from './Pages/About';
 import Contact from './Pages/Contact';
 import DragDrop from './Pages/DragDrop';
 import Sidebar from './sitemap/Sidebar';
-
+import ObjectJson from './ui/ObjectJson';
 
 
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload } from './ui/';
@@ -32,7 +32,7 @@ function App() {
         { title: 'D4', path: '/D4' },
         { title: 'DragDrop', path: '/DragDrop' },
         { title: 'FileUpload', path: '/FileUpload' },
-        
+        { title: 'ObjectJson', path: '/ObjectJson' },
         { title: 'Api', path: '/api' },
     ];
     const biooption = [
@@ -75,7 +75,7 @@ function App() {
                             <li><Link to="/DragDrop">DragDrop</Link></li>
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
                             <li><Link to="/FileUpload ">FileUpload</Link></li>
-
+                            <li><Link to="/ObjectJson ">ObjectJson</Link></li>
                         </ul>
                     </nav>
                     <Routes>
@@ -88,6 +88,7 @@ function App() {
                         <Route path="/DragDrop" element={<DragDrop />} />
                         <Route path="/ColorPickerWithDialog" element={<ColorPickerWithDialog />} />
                         <Route path="/FileUpload" element={<FileUpload />} />
+                        <Route path="/ObjectJson" element={<ObjectJson />} />
                         <Route path="/Api" element={<Api />} />
                     </Routes>
                 </div>
