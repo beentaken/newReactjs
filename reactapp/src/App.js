@@ -1,25 +1,24 @@
 // src/App.js
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './Pages/Home';
 import About from './Pages/About';
-import Contact from './Pages/Contact';
 import DragDrop from './Pages/DragDrop';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
-
-
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload } from './ui/';
-import {
-    TagFaces,
-    Visibility,
-    Fingerprint
-} from '@mui/icons-material';
+import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
-
 import D4 from "./date/D4";
 import D5 from "./date/D5";
-import './App.css'; // Add global styles
+import './App.css';
+
+
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+
+const Contact = lazy(() => wait(1000).then(() => import('./Pages/Contact')));
+
 
 function App() {
     const pages = [
@@ -36,30 +35,15 @@ function App() {
         { title: 'Api', path: '/api' },
     ];
     const biooption = [
-        {
-            name: "Face",
-            id: "0",
-            bool: false,
-            icon: TagFaces,
-        },
-        {
-            name: "Iris",
-            id: "1",
-            bool: false,
-            icon: Visibility,
-        },
-        {
-            name: "Finger",
-            id: "2",
-            bool: true,
-            icon: Fingerprint,
-        },
+        { name: "Face", id: "0", bool: false, icon: TagFaces },
+        { name: "Iris", id: "1", bool: false, icon: Visibility },
+        { name: "Finger", id: "2", bool: true, icon: Fingerprint },
     ];
+
     return (
         <Router>
             <div className="app-container">
-                {/*        <Api />*/}
-                <div className="notices"> </div>
+                <div className="notices"></div>
                 <Sidebar pages={pages} />
                 <div className="main-content">
                     <h1>Welcome to My App</h1>
@@ -74,23 +58,27 @@ function App() {
                             <li><Link to="/Api">Api</Link></li>
                             <li><Link to="/DragDrop">DragDrop</Link></li>
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
-                            <li><Link to="/FileUpload ">FileUpload</Link></li>
-                            <li><Link to="/ObjectJson ">ObjectJson</Link></li>
+                            <li><Link to="/FileUpload">FileUpload</Link></li>
+                            <li><Link to="/ObjectJson">ObjectJson</Link></li>
                         </ul>
                     </nav>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/CheckboxesGroup" element={<CheckboxesGroup biooptions={biooption} />} />
-                        <Route path="/D4" element={<D4 />} />
-                        <Route path="/D5" element={<D5 />} />
-                        <Route path="/DragDrop" element={<DragDrop />} />
-                        <Route path="/ColorPickerWithDialog" element={<ColorPickerWithDialog />} />
-                        <Route path="/FileUpload" element={<FileUpload />} />
-                        <Route path="/ObjectJson" element={<ObjectJson />} />
-                        <Route path="/Api" element={<Api />} />
-                    </Routes>
+
+                    {/* Display loading while components are being delayed */}
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/CheckboxesGroup" element={<CheckboxesGroup biooptions={biooption} />} />
+                            <Route path="/D4" element={<D4 />} />
+                            <Route path="/D5" element={<D5 />} />
+                            <Route path="/DragDrop" element={<DragDrop />} />
+                            <Route path="/ColorPickerWithDialog" element={<ColorPickerWithDialog />} />
+                            <Route path="/FileUpload" element={<FileUpload />} />
+                            <Route path="/ObjectJson" element={<ObjectJson />} />
+                            <Route path="/Api" element={<Api />} />
+                        </Routes>
+                    </Suspense>
                 </div>
             </div>
         </Router>
