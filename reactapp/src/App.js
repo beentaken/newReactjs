@@ -2,7 +2,6 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './Pages/Home';
-import About from './Pages/About';
 import DragDrop from './Pages/DragDrop';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
@@ -18,7 +17,7 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 const Contact = lazy(() => wait(1000).then(() => import('./Pages/Contact')));
-
+const About = lazy(() => import('./Pages/About'));
 
 function App() {
     const pages = [
