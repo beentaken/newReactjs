@@ -44,8 +44,8 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment()) // if only for dev
+//{
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c => {
@@ -54,20 +54,21 @@ if (app.Environment.IsDevelopment())
         c.DisplayRequestDuration();
         c.EnableDeepLinking();
         c.EnableFilter();
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    // Disable HTTPS redirection
-    // app.UseHttpsRedirection();
-}
+//}
+//else
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    // Disable HTTPS redirection
+//    // app.UseHttpsRedirection();
+//}
 
 
 app.UseAuthentication();
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); // if got https
 
 
 app.UseAuthorization();
