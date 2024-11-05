@@ -8,7 +8,7 @@ cls
 echo Building image %image%...
 
 REM Use the correct build context path
-docker build -f "../Dockerfile" --force-rm -t %image% "../src"
+docker build -f "../reactapp/Dockerfile" --force-rm -t %image% "../reactapp"
 
 if errorlevel 1 (
     echo Failed to build the image. Exiting...
