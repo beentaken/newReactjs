@@ -1,16 +1,29 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+#PRODUCTION
+FROM node:alpine as build
+WORKDIR /publish
+RUN apk --no-cache add curl
+COPY ./Reactjs/reactapp/package.json ./
+COPY ./Reactjs/reactapp/package-lock.json ./
+COPY ./Reactjs/reactapp/ ./
+ENV NODE_ENV=production
+RUN npm install --production
+RUN npm run-script build --production
 
-COPY ["reactapp/reactapp.csproj", "reactapp/"]
-RUN dotnet restore "reactapp/reactapp.csproj"
-COPY . .
-
-# Build the application
-RUN dotnet publish "reactapp.csproj" -c Release -o /app/publish
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
-
+FROM build AS final
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /publish/build .
+RUN npm install -g serve
+CMD serve -s -l 80
 
-ENTRYPOINT ["dotnet", "reactapp.dll"]
+
+
+##DEVELOPMENT
+#FROM node:alpine
+#WORKDIR /app
+#COPY ./Reactjs/reactapp/package.json ./
+#COPY ./Reactjs/reactapp/package-lock.json ./
+#COPY ./Reactjs/reactapp/ ./
+#RUN npm i
+#CMD PORT=80 npm run start #for linux
+##CMD set PORT=80 && npm run start #for windows
+##CMD ["npm", "run", "start"]
