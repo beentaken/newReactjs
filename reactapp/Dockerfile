@@ -2,15 +2,16 @@
 FROM node:alpine as build
 WORKDIR /publish
 RUN apk --no-cache add curl
-COPY ./Reactjs/reactapp/package.json ./
-COPY ./Reactjs/reactapp/package-lock.json ./
-COPY ./Reactjs/reactapp/ ./
+COPY ../package.json ./
+COPY ../package-lock.json ./
+COPY ../ ./
 ENV NODE_ENV=production
 RUN npm install --production
 RUN npm run-script build --production
 
 FROM build AS final
 WORKDIR /app
+EXPOSE 80
 COPY --from=build /publish/build .
 RUN npm install -g serve
 CMD serve -s -l 80
