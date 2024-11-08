@@ -22,7 +22,7 @@ RUN dotnet publish "../webapi.csproj" -c Release -o /app/publish
 # Final stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8104
+EXPOSE 7048
 # Copy the build artifacts
 COPY --from=build /app/publish .
 

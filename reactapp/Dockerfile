@@ -1,5 +1,5 @@
 #PRODUCTION
-FROM node:alpine as build
+FROM node:alpine AS build
 WORKDIR /publish
 RUN apk --no-cache add curl
 COPY ../package.json ./
@@ -21,9 +21,9 @@ CMD serve -s -l 80
 ##DEVELOPMENT
 #FROM node:alpine
 #WORKDIR /app
-#COPY ./Reactjs/reactapp/package.json ./
-#COPY ./Reactjs/reactapp/package-lock.json ./
-#COPY ./Reactjs/reactapp/ ./
+#COPY ../package.json ./
+#COPY ../package-lock.json ./
+#COPY ../ ./
 #RUN npm i
 #CMD PORT=80 npm run start #for linux
 ##CMD set PORT=80 && npm run start #for windows

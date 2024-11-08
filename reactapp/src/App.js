@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './Pages/Home';
 import DragDrop from './Pages/DragDrop';
+import Uploadimage from './Pages/Uploadimage';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload } from './ui/';
@@ -32,7 +33,8 @@ function App() {
         { title: 'FileUpload', path: '/FileUpload' },
         { title: 'ObjectJson', path: '/ObjectJson' },
         { title: 'Api', path: '/api' },
-    ];
+        { title: 'Uploadimage', path: '/Uploadimage' },
+    ]; 
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
         { name: "Iris", id: "1", bool: false, icon: Visibility },
@@ -59,6 +61,7 @@ function App() {
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
                             <li><Link to="/FileUpload">FileUpload</Link></li>
                             <li><Link to="/ObjectJson">ObjectJson</Link></li>
+                            <li><Link to="/Uploadimage">Uploadimage</Link></li>
                         </ul>
                     </nav>
 
@@ -76,6 +79,7 @@ function App() {
                             <Route path="/FileUpload" element={<FileUpload />} />
                             <Route path="/ObjectJson" element={<ObjectJson />} />
                             <Route path="/Api" element={<Api />} />
+                            <Route path="/Uploadimage" element={<Uploadimage />} />
                         </Routes>
                     </Suspense>
                 </div>
