@@ -69,3 +69,8 @@
 /reactapp/node_modules/.cache/default-development/index.pack
 /reactapp/node_modules/.cache/default-development/index.pack.old
 /reactapp/node_modules/.cache/.eslintcache
+/yml
+/reactapp/node_modules/.cache/babel-loader
+/reactapp/node_modules/.cache/default-development/16.pack
+/reactapp/node_modules/.cache/default-development/18.pack
+/reactapp/node_modules/.cache/default-development/19.pack
