@@ -8,13 +8,11 @@ const context = [
 
 module.exports = function (app) {
     const appProxy = createProxyMiddleware(context, {
-        target: 'http://localhost:7048',
-        secure: false, // Disable SSL verification for local development
+        target: 'http://host.docker.internal:7048', // Or 'http://api:7048' if using docker-compose network
+        secure: false,
         changeOrigin: true,
-        logLevel: 'debug', // Add this for detailed logging
+        logLevel: 'debug',
     });
-
-    console.log(JSON.stringify(appProxy));
 
     app.use(appProxy);
 };
