@@ -6,7 +6,7 @@ import DragDrop from './Pages/DragDrop';
 import Uploadimage from './Pages/Uploadimage';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
-import { CheckboxesGroup, ColorPickerWithDialog, FileUpload } from './ui/';
+import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera } from './ui/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
 import D4 from "./date/D4";
