@@ -1,9 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
 
+import { Paper, Tabs, Tab, Box, AppBar } from '@mui/material';
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -34,28 +32,28 @@ function a11yProps(index) {
 }
 
 export default function AnotherTabs() {
-    const [value, setValue] = React.useState(0);
+    const [activetab, setActiveTab] = React.useState(0);
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setActiveTab(newValue);
     };
 
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tabs value={activetab} onChange={(e, id) => setActiveTab(id)} aria-label="basic tabs example">
                     <Tab label="Item One" {...a11yProps(0)} />
                     <Tab label="Item Two" {...a11yProps(1)} />
                     <Tab label="Item Three" {...a11yProps(2)} />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel value={activetab} index={0}>
                 Item One
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel value={activetab} index={1}>
                 Item Two
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
+            <CustomTabPanel value={activetab} index={2}>
                 Item Three
             </CustomTabPanel>
         </Box>
