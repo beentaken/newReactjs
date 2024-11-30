@@ -9,6 +9,7 @@ import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera } from './ui/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
+import AnotherTabs from "./Pages/AnotherTabs";
 import D4 from "./date/D4";
 import D5 from "./date/D5";
 import './App.css';
@@ -33,7 +34,10 @@ function App() {
         { title: 'FileUpload', path: '/FileUpload' },
         { title: 'ObjectJson', path: '/ObjectJson' },
         { title: 'Api', path: '/api' },
+        { title: 'AnotherTabs', path: '/AnotherTabs' },
         { title: 'Uploadimage', path: '/Uploadimage' },
+
+
     ]; 
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
@@ -57,6 +61,7 @@ function App() {
                             <li><Link to="/D4">D4</Link></li>
                             <li><Link to="/D5">D5</Link></li>
                             <li><Link to="/Api">Api</Link></li>
+                            <li><Link to="/AnotherTabs">AnotherTabs</Link></li>
                             <li><Link to="/DragDrop">DragDrop</Link></li>
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
                             <li><Link to="/FileUpload">FileUpload</Link></li>
@@ -79,6 +84,7 @@ function App() {
                             <Route path="/FileUpload" element={<FileUpload />} />
                             <Route path="/ObjectJson" element={<ObjectJson />} />
                             <Route path="/Api" element={<Api />} />
+                            <Route path="/AnotherTabs" element={<AnotherTabs />} />
                             <Route path="/Uploadimage" element={<Uploadimage />} />
                         </Routes>
                     </Suspense>
