@@ -1,61 +1,30 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-
-import { Paper, Tabs, Tab, Box, AppBar } from '@mui/material';
-function CustomTabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-        </div>
-    );
-}
-
-CustomTabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
+import { Tabs, Tab, Box } from '@mui/material';
 
 export default function AnotherTabs() {
-    const [activetab, setActiveTab] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setActiveTab(newValue);
-    };
+    const [activeTab, setActiveTab] = React.useState(0);
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={activetab} onChange={(e, id) => setActiveTab(id)} aria-label="basic tabs example">
-                    <Tab label="Item One" {...a11yProps(0)} />
-                    <Tab label="Item Two" {...a11yProps(1)} />
-                    <Tab label="Item Three" {...a11yProps(2)} />
-                </Tabs>
+        <div>
+            <button>Example Button</button>
+            <Box sx={{ width: '100%' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={activeTab} onChange={(e, id) => setActiveTab(id)}>
+                        <Tab label="Item One" value={0} />
+                        <Tab label="Item Two" value={1} />
+                        <Tab label="Item Three" value={2} />
+                    </Tabs>
+                </Box>
+                <Box style={{ display: activeTab === 0 ? '' : 'none' }}>
+                    Item One
+                </Box>
+                <Box style={{ display: activeTab === 1 ? '' : 'none' }}>
+                    Item Two
+                </Box>
+                <Box style={{ display: activeTab === 2 ? '' : 'none' }}>
+                    Item Three
+                </Box>
             </Box>
-            <CustomTabPanel value={activetab} index={0}>
-                Item One
-            </CustomTabPanel>
-            <CustomTabPanel value={activetab} index={1}>
-                Item Two
-            </CustomTabPanel>
-            <CustomTabPanel value={activetab} index={2}>
-                Item Three
-            </CustomTabPanel>
-        </Box>
+        </div>
     );
 }
