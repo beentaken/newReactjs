@@ -10,6 +10,8 @@ import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera } from '.
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
 import AnotherTabs from "./Pages/AnotherTabs";
+import AnotherTabsLazy from "./Pages/AnotherTabsLazy";
+import AnotherTabsConditional from "./Pages/AnotherTabsConditional";
 import D4 from "./date/D4";
 import D5 from "./date/D5";
 import './App.css';
@@ -35,6 +37,8 @@ function App() {
         { title: 'ObjectJson', path: '/ObjectJson' },
         { title: 'Api', path: '/api' },
         { title: 'AnotherTabs', path: '/AnotherTabs' },
+        { title: 'AnotherTabsLazy', path: '/AnotherTabsLazy' },
+        { title: 'AnotherTabsConditional', path: '/AnotherTabsConditional' },
         { title: 'Uploadimage', path: '/Uploadimage' },
 
 
@@ -62,6 +66,8 @@ function App() {
                             <li><Link to="/D5">D5</Link></li>
                             <li><Link to="/Api">Api</Link></li>
                             <li><Link to="/AnotherTabs">AnotherTabs</Link></li>
+                            <li><Link to="/AnotherTabsLazy">AnotherTabsLazy</Link></li>
+                            <li><Link to="/AnotherTabsConditional">AnotherTabsConditional</Link></li>
                             <li><Link to="/DragDrop">DragDrop</Link></li>
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
                             <li><Link to="/FileUpload">FileUpload</Link></li>
@@ -85,6 +91,8 @@ function App() {
                             <Route path="/ObjectJson" element={<ObjectJson />} />
                             <Route path="/Api" element={<Api />} />
                             <Route path="/AnotherTabs" element={<AnotherTabs />} />
+                            <Route path="/AnotherTabsLazy" element={<AnotherTabsLazy />} />
+                            <Route path="/AnotherTabsConditional" element={<AnotherTabsConditional />} />
                             <Route path="/Uploadimage" element={<Uploadimage />} />
                         </Routes>
                     </Suspense>
