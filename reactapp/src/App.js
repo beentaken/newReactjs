@@ -2,8 +2,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './Pages/Home';
-import DragDrop from './Pages/DragDrop';
-import Uploadimage from './Pages/Uploadimage';
+import PagesMain from './Pages/PagesMain';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera } from './ui/';
@@ -12,6 +11,7 @@ import Api from "./Pages/Api";
 import AnotherTabs from "./Pages/AnotherTabs";
 import AnotherTabsLazy from "./Pages/AnotherTabsLazy";
 import AnotherTabsConditional from "./Pages/AnotherTabsConditional";
+import Memosample from "./Rendering/Memosample";
 import D4 from "./date/D4";
 import D5 from "./date/D5";
 import './App.css';
@@ -32,16 +32,14 @@ function App() {
         { title: 'ColorPickerWithDialog', path: '/ColorPickerWithDialog' },
         { title: 'D5', path: '/D5' },
         { title: 'D4', path: '/D4' },
-        { title: 'DragDrop', path: '/DragDrop' },
         { title: 'FileUpload', path: '/FileUpload' },
         { title: 'ObjectJson', path: '/ObjectJson' },
         { title: 'Api', path: '/api' },
         { title: 'AnotherTabs', path: '/AnotherTabs' },
         { title: 'AnotherTabsLazy', path: '/AnotherTabsLazy' },
         { title: 'AnotherTabsConditional', path: '/AnotherTabsConditional' },
-        { title: 'Uploadimage', path: '/Uploadimage' },
-
-
+        { title: 'Memosample', path: '/Memosample' }, 
+        { title: 'PagesMain', path: '/PagesMain' }, 
     ]; 
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
@@ -68,11 +66,9 @@ function App() {
                             <li><Link to="/AnotherTabs">AnotherTabs</Link></li>
                             <li><Link to="/AnotherTabsLazy">AnotherTabsLazy</Link></li>
                             <li><Link to="/AnotherTabsConditional">AnotherTabsConditional</Link></li>
-                            <li><Link to="/DragDrop">DragDrop</Link></li>
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
                             <li><Link to="/FileUpload">FileUpload</Link></li>
                             <li><Link to="/ObjectJson">ObjectJson</Link></li>
-                            <li><Link to="/Uploadimage">Uploadimage</Link></li>
                         </ul>
                     </nav>
 
@@ -85,7 +81,6 @@ function App() {
                             <Route path="/CheckboxesGroup" element={<CheckboxesGroup biooptions={biooption} />} />
                             <Route path="/D4" element={<D4 />} />
                             <Route path="/D5" element={<D5 />} />
-                            <Route path="/DragDrop" element={<DragDrop />} />
                             <Route path="/ColorPickerWithDialog" element={<ColorPickerWithDialog />} />
                             <Route path="/FileUpload" element={<FileUpload />} />
                             <Route path="/ObjectJson" element={<ObjectJson />} />
@@ -93,7 +88,7 @@ function App() {
                             <Route path="/AnotherTabs" element={<AnotherTabs />} />
                             <Route path="/AnotherTabsLazy" element={<AnotherTabsLazy />} />
                             <Route path="/AnotherTabsConditional" element={<AnotherTabsConditional />} />
-                            <Route path="/Uploadimage" element={<Uploadimage />} />
+                            <Route path="/PagesMain" element={<PagesMain />} />
                         </Routes>
                     </Suspense>
                 </div>
