@@ -5,7 +5,7 @@ import Home from './Pages/Home';
 import PagesMain from './Pages/PagesMain';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
-import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera } from './ui/';
+import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera, OpenDoor, LayerMap } from './ui/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
 import AnotherTabs from "./Pages/AnotherTabs";
@@ -39,7 +39,8 @@ function App() {
         { title: 'AnotherTabsLazy', path: '/AnotherTabsLazy' },
         { title: 'AnotherTabsConditional', path: '/AnotherTabsConditional' },
         { title: 'Memosample', path: '/Memosample' }, 
-        { title: 'PagesMain', path: '/PagesMain' }, 
+        { title: 'OpenDoor', path: '/OpenDoor' }, 
+        { title: 'LayerMap', path: '/LayerMap' }, 
     ]; 
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
@@ -69,6 +70,8 @@ function App() {
                             <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
                             <li><Link to="/FileUpload">FileUpload</Link></li>
                             <li><Link to="/ObjectJson">ObjectJson</Link></li>
+                            <li><Link to="/OpenDoor">OpenDoor</Link></li>
+                            <li><Link to="/LayerMap">LayerMap</Link></li>
                         </ul>
                     </nav>
 
@@ -89,6 +92,9 @@ function App() {
                             <Route path="/AnotherTabsLazy" element={<AnotherTabsLazy />} />
                             <Route path="/AnotherTabsConditional" element={<AnotherTabsConditional />} />
                             <Route path="/PagesMain" element={<PagesMain />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/OpenDoor" element={<OpenDoor />} />
+                            <Route path="/LayerMap" element={<LayerMap />} />
                         </Routes>
                     </Suspense>
                 </div>
