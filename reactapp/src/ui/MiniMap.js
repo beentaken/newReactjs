@@ -124,7 +124,7 @@ const miniMap = () => {
                 source.removeFeature(featureIconRef.current);
             }
             if (selectedFeature === "remveall" && featureIconRef.current) {
-
+                const source = vectorLayerRef.current.getSource();
                 source.clear(); // Removes all features at once
             }
         }
