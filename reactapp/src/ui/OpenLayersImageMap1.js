@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
 import { Map, View } from "ol";
 import ImageLayer from "ol/layer/Image";
@@ -9,39 +9,36 @@ import { Vector as VectorSource } from "ol/source";
 import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 
-// Import images from assets (ensure correct paths)
+// Import images (ensure correct paths)
 import doorBlue from "../Image/door-blue.png";
 import floorImage from "../Image/floor.png";
 
 const OpenLayersImageMap1 = () => {
     const mapRef = useRef(null);
+    const vectorLayerRef = useRef(null);
+    const featurePointRef = useRef(null); // Store the red dot feature
+
+    const [map, setMap] = useState(null);
 
     useEffect(() => {
-        if (!mapRef.current) return; // ✅ Prevent running if ref is not set
+        if (!mapRef.current) return;
 
-        // ✅ Define the extent manually (use your image's real dimensions)
-        const imageExtent = [0, 0, 800, 600]; // Example: 800x600 pixels
-
-        // ✅ Use the predefined extent (do NOT call getExtent())
-        const extent = imageExtent;
-
-        // Center of the image
+        const imageExtent = [0, 0, 800, 600]; // Image extent
         const center = [
-            (extent[0] + extent[2]) / 2, // Center X
-            (extent[1] + extent[3]) / 2, // Center Y
+            (imageExtent[0] + imageExtent[2]) / 2,
+            (imageExtent[1] + imageExtent[3]) / 2,
         ];
 
-        // ✅ Initialize image layer correctly
         const imageLayer = new ImageLayer({
             source: new Static({
                 url: floorImage,
-                imageExtent: extent, // ✅ Use manually defined extent
+                imageExtent: imageExtent,
             }),
         });
 
-        // Icon feature (door)
+        // Create a door icon feature
         const featureIcon = new Feature({
-            geometry: new Point([extent[2] * 0.75, extent[3] * 0.75]), // 75% of width/height
+            geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]),
         });
 
         const iconStyle = new Style({
@@ -54,10 +51,14 @@ const OpenLayersImageMap1 = () => {
             }),
         });
 
-        // Circle feature (red dot)
+        featureIcon.setStyle(iconStyle);
+
+        // Create a red dot feature (store reference for removal)
         const featurePoint = new Feature({
-            geometry: new Point([extent[2] * 0.5, extent[3] * 0.5]), // Center of image
+            geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]),
         });
+
+        featurePointRef.current = featurePoint; // Store feature for later removal
 
         const pointStyle = new Style({
             image: new Circle({
@@ -67,36 +68,52 @@ const OpenLayersImageMap1 = () => {
             }),
         });
 
-        featureIcon.setStyle(iconStyle);
         featurePoint.setStyle(pointStyle);
 
-        // Create a vector layer and add the features
+        // Create a vector layer and add both features
         const vectorLayer = new VectorLayer({
             source: new VectorSource({
                 features: [featureIcon, featurePoint],
             }),
         });
 
-        // ✅ Ensure the map initializes properly
-        const map = new Map({
+        vectorLayerRef.current = vectorLayer; // Store vector layer for removal
+
+        const newMap = new Map({
             target: mapRef.current,
             layers: [imageLayer, vectorLayer],
             view: new View({
                 center: center,
                 zoom: 1,
-                extent: extent, // ✅ Use manually defined extent
+                extent: imageExtent,
             }),
         });
 
-        // Cleanup function to prevent memory leaks
+        setMap(newMap); // Store map instance
+
         return () => {
-            if (map) {
-                map.setTarget(null);
+            if (newMap) {
+                newMap.setTarget(null);
             }
         };
     }, []);
 
-    return <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />;
+    // ✅ Function to remove the red dot feature
+    const removeFeature = () => {
+        if (vectorLayerRef.current && featurePointRef.current) {
+            const source = vectorLayerRef.current.getSource();
+            source.removeFeature(featurePointRef.current); // Remove red dot
+        }
+    };
+
+    return (
+        <div>
+            <button onClick={removeFeature} style={{ position: "absolute", top: 10, left: 10, zIndex: 1000 }}>
+                Remove Red Dot
+            </button>
+            <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />
+        </div>
+    );
 };
 
 export default OpenLayersImageMap1;
