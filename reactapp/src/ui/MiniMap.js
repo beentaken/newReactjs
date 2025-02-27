@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
-import { Map as OLMap, View } from "ol"; // Rename to avoid collision with component name
+import { Map, View } from "ol";
 import ImageLayer from "ol/layer/Image";
 import Static from "ol/source/ImageStatic";
 import { Point } from "ol/geom";
@@ -9,17 +9,21 @@ import { Vector as VectorSource } from "ol/source";
 import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 
+// Material-UI imports
+import { FormControl, InputLabel, MenuItem, Select, Button, Box } from "@mui/material";
+
 // Import images (ensure correct paths)
 import doorBlue from "../Image/door-blue.png";
 import floorImage from "../Image/floor.png";
 
-
-const Map = () => {
+const miniMap = () => {
     const mapRef = useRef(null);
     const vectorLayerRef = useRef(null);
-    const featurePointRef = useRef(null); // Store the red dot feature
+    const featureIconRef = useRef(null);
+    const featurePointRef = useRef(null);
 
     const [map, setMap] = useState(null);
+    const [selectedFeature, setSelectedFeature] = useState("redDot");
 
     useEffect(() => {
         if (!mapRef.current) return;
@@ -37,10 +41,12 @@ const Map = () => {
             }),
         });
 
-        // Create a door icon feature
+        // Create the door icon feature
         const featureIcon = new Feature({
             geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]),
         });
+
+        featureIconRef.current = featureIcon;
 
         const iconStyle = new Style({
             image: new Icon({
@@ -54,12 +60,12 @@ const Map = () => {
 
         featureIcon.setStyle(iconStyle);
 
-        // Create a red dot feature (store reference for removal)
+        // Create the red dot feature
         const featurePoint = new Feature({
             geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]),
         });
 
-        featurePointRef.current = featurePoint; // Store feature for later removal
+        featurePointRef.current = featurePoint;
 
         const pointStyle = new Style({
             image: new Circle({
@@ -78,9 +84,9 @@ const Map = () => {
             }),
         });
 
-        vectorLayerRef.current = vectorLayer; // Store vector layer for removal
+        vectorLayerRef.current = vectorLayer;
 
-        const newMap = new OLMap({
+        const newMap = new Map({
             target: mapRef.current,
             layers: [imageLayer, vectorLayer],
             view: new View({
@@ -90,7 +96,7 @@ const Map = () => {
             }),
         });
 
-        setMap(newMap); // Store map instance
+        setMap(newMap);
 
         return () => {
             if (newMap) {
@@ -99,38 +105,42 @@ const Map = () => {
         };
     }, []);
 
-    // ✅ Function to remove the red dot feature
+    // ✅ Function to remove selected feature
     const removeFeature = () => {
-        if (vectorLayerRef.current && featurePointRef.current) {
+        if (vectorLayerRef.current) {
             const source = vectorLayerRef.current.getSource();
-            source.removeFeature(featurePointRef.current); // Remove red dot
-
+            if (selectedFeature === "redDot" && featurePointRef.current) {
+                source.removeFeature(featurePointRef.current);
+            } else if (selectedFeature === "doorIcon" && featureIconRef.current) {
+                source.removeFeature(featureIconRef.current);
+            }
         }
     };
 
     return (
-        <div style={{ position: "relative", height: "100vh" }}>
-            {/* Button should appear above the map */}
-            <button
-                onClick={removeFeature}
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    left: 10,
-                    zIndex: 1000,
-                    padding: "10px",
-                    backgroundColor: "#4CAF50",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                    borderRadius: "5px",
-                }}
-            >
-                Remove Red Dot
-            </button>
-            <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+        <div>
+            {/* Material-UI Controls */}
+            <Box sx={{  zIndex: 1000, display: "flex", gap: 2 }}>
+                <FormControl size="small" sx={{ minWidth: 150 }}>
+                    <InputLabel>Select Feature</InputLabel>
+                    <Select
+                        value={selectedFeature}
+                        onChange={(e) => setSelectedFeature(e.target.value)}
+                        label="Select Feature"
+                    >
+                        <MenuItem value="redDot">Red Dot</MenuItem>
+                        <MenuItem value="doorIcon">Door Icon</MenuItem>
+                    </Select>
+                </FormControl>
+                <Button variant="contained" color="error" onClick={removeFeature}>
+                    Remove
+                </Button>
+            </Box>
+
+            {/* Map Container */}
+            <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />
         </div>
     );
 };
 
-export default Map;
+export default miniMap;
