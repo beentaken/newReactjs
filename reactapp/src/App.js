@@ -80,7 +80,7 @@ function App() {
                     {/* Display loading while components are being delayed */}
                     <Suspense fallback={<div>Loading...</div>}>
                         <Routes>
-                            <Route path="/" element={<Home />} />
+                            <Route path="/" element={<LayerMap />} />
                             <Route path="/about" element={<About />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/CheckboxesGroup" element={<CheckboxesGroup biooptions={biooption} />} />

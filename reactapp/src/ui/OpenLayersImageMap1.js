@@ -9,48 +9,54 @@ import { Vector as VectorSource } from "ol/source";
 import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 
-// Import images from assets
-import doorBlue from "../Image/door-blue.png"; // Ensure correct path
-import floorImage from '../Image/floor.png'; // Ensure correct path
+// Import images from assets (ensure correct paths)
+import doorBlue from "../Image/door-blue.png";
+import floorImage from "../Image/floor.png";
 
 const OpenLayersImageMap1 = () => {
     const mapRef = useRef(null);
 
     useEffect(() => {
-        // Define the extent of the floor image (adjust based on your image dimensions)
-        const imageExtent = [0, 0, 1024, 768]; // Example: 1024x768 pixels
+        if (!mapRef.current) return; // ✅ Prevent running if ref is not set
+
+        // ✅ Define the extent manually (use your image's real dimensions)
+        const imageExtent = [0, 0, 800, 600]; // Example: 800x600 pixels
+
+        // ✅ Use the predefined extent (do NOT call getExtent())
+        const extent = imageExtent;
 
         // Center of the image
         const center = [
-            (imageExtent[0] + imageExtent[2]) / 2, // Center X
-            (imageExtent[1] + imageExtent[3]) / 2, // Center Y
+            (extent[0] + extent[2]) / 2, // Center X
+            (extent[1] + extent[3]) / 2, // Center Y
         ];
 
-        // Create an image layer using the floor image
+        // ✅ Initialize image layer correctly
         const imageLayer = new ImageLayer({
             source: new Static({
-                url: floorImage, // Use the imported floor image
-                imageExtent: imageExtent,
-                projection: 'EPSG:3857', // Use Web Mercator projection
+                url: floorImage,
+                imageExtent: extent, // ✅ Use manually defined extent
             }),
         });
 
-        // Icon feature
+        // Icon feature (door)
         const featureIcon = new Feature({
-            geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]), // Place icon at 75% of image width and height
+            geometry: new Point([extent[2] * 0.75, extent[3] * 0.75]), // 75% of width/height
         });
 
-        // Icon style
         const iconStyle = new Style({
             image: new Icon({
                 src: doorBlue,
-                scale: 0.1, // Adjust scale as needed
+                scale: 0.1,
+                anchor: [0.5, 1],
+                anchorXUnits: "fraction",
+                anchorYUnits: "fraction",
             }),
         });
 
-        // Circle feature
+        // Circle feature (red dot)
         const featurePoint = new Feature({
-            geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]), // Place point at center
+            geometry: new Point([extent[2] * 0.5, extent[3] * 0.5]), // Center of image
         });
 
         const pointStyle = new Style({
@@ -64,26 +70,30 @@ const OpenLayersImageMap1 = () => {
         featureIcon.setStyle(iconStyle);
         featurePoint.setStyle(pointStyle);
 
-        // Create a vector layer and add the features to it
+        // Create a vector layer and add the features
         const vectorLayer = new VectorLayer({
             source: new VectorSource({
                 features: [featureIcon, featurePoint],
             }),
         });
 
-        // Create the map
+        // ✅ Ensure the map initializes properly
         const map = new Map({
             target: mapRef.current,
-            layers: [imageLayer, vectorLayer], // Use the floor image layer and vector layer
+            layers: [imageLayer, vectorLayer],
             view: new View({
-                projection: 'EPSG:3857', // Use Web Mercator projection
                 center: center,
-                zoom: 1, // Adjust zoom level as needed
+                zoom: 1,
+                extent: extent, // ✅ Use manually defined extent
             }),
         });
 
-        // Cleanup on unmount
-        return () => map.setTarget(undefined);
+        // Cleanup function to prevent memory leaks
+        return () => {
+            if (map) {
+                map.setTarget(null);
+            }
+        };
     }, []);
 
     return <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />;
