@@ -17,6 +17,14 @@ import doorBlue from "../Image/door-blue.png";
 import floorImage from "../Image/floor.png";
 
 const miniMap = () => {
+
+    const featureOptions = [
+        'redDot', // Red
+        'doorIcon', // Green
+        'remveall', // Blue
+    ];
+
+
     const mapRef = useRef(null);
     const vectorLayerRef = useRef(null);
     const featureIconRef = useRef(null);
@@ -111,8 +119,13 @@ const miniMap = () => {
             const source = vectorLayerRef.current.getSource();
             if (selectedFeature === "redDot" && featurePointRef.current) {
                 source.removeFeature(featurePointRef.current);
-            } else if (selectedFeature === "doorIcon" && featureIconRef.current) {
+            }
+            if (selectedFeature === "doorIcon" && featureIconRef.current) {
                 source.removeFeature(featureIconRef.current);
+            }
+            if (selectedFeature === "remveall" && featureIconRef.current) {
+
+                source.clear(); // Removes all features at once
             }
         }
     };
@@ -128,8 +141,12 @@ const miniMap = () => {
                         onChange={(e) => setSelectedFeature(e.target.value)}
                         label="Select Feature"
                     >
-                        <MenuItem value="redDot">Red Dot</MenuItem>
-                        <MenuItem value="doorIcon">Door Icon</MenuItem>
+                        {featureOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+
                     </Select>
                 </FormControl>
                 <Button variant="contained" color="error" onClick={removeFeature}>
