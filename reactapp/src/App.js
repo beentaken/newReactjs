@@ -5,7 +5,7 @@ import Home from './Pages/Home';
 import PagesMain from './Pages/PagesMain';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
-import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera, OpenDoor, LayerMap } from './ui/';
+import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera, OpenDoor, LayerMap1, LayerMap } from './ui/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
 import AnotherTabs from "./Pages/AnotherTabs";
@@ -41,6 +41,7 @@ function App() {
         { title: 'Memosample', path: '/Memosample' }, 
         { title: 'OpenDoor', path: '/OpenDoor' }, 
         { title: 'LayerMap', path: '/LayerMap' }, 
+        { title: 'LayerMap1', path: '/LayerMap1' }, 
     ]; 
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
@@ -72,6 +73,7 @@ function App() {
                             <li><Link to="/ObjectJson">ObjectJson</Link></li>
                             <li><Link to="/OpenDoor">OpenDoor</Link></li>
                             <li><Link to="/LayerMap">LayerMap</Link></li>
+                            <li><Link to="/LayerMap1">LayerMap1</Link></li>
                         </ul>
                     </nav>
 
@@ -94,6 +96,7 @@ function App() {
                             <Route path="/PagesMain" element={<PagesMain />} />
                             <Route path="/about" element={<About />} />
                             <Route path="/OpenDoor" element={<OpenDoor />} />
+                            <Route path="/LayerMap1" element={<LayerMap1 />} />
                             <Route path="/LayerMap" element={<LayerMap />} />
                         </Routes>
                     </Suspense>

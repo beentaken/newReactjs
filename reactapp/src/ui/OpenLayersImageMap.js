@@ -27,8 +27,8 @@ const OpenLayersImageMap = () => {
         // Corrected image path
         const iconStyle = new Style({
             image: new Icon({
-                src: 'door-blue.png', // Path to your image
-                scale: 1,
+                src: doorBlue, // Path to your image
+                scale: 0.1, // Adjust scale as needed
                 anchor: [0.5, 1],
             }),
         });
