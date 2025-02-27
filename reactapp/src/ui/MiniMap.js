@@ -16,14 +16,12 @@ import { FormControl, InputLabel, MenuItem, Select, Button, Box } from "@mui/mat
 import doorBlue from "../Image/door-blue.png";
 import floorImage from "../Image/floor.png";
 
-const miniMap = () => {
-
+const MiniMap = () => {
     const featureOptions = [
-        'redDot', // Red
-        'doorIcon', // Green
-        'remveall', // Blue
+        'redDot', // Red dot
+        'doorIcon', // Door icon
+        'removeAll', // Remove all features
     ];
-
 
     const mapRef = useRef(null);
     const vectorLayerRef = useRef(null);
@@ -32,16 +30,19 @@ const miniMap = () => {
 
     const [map, setMap] = useState(null);
     const [selectedFeature, setSelectedFeature] = useState("redDot");
+    const [vectorSource, setVectorSource] = useState(null);
+    const [removedFeatures, setRemovedFeatures] = useState([]);
 
     useEffect(() => {
         if (!mapRef.current) return;
 
-        const imageExtent = [0, 0, 800, 600]; // Image extent
+        const imageExtent = [0, 0, 800, 600]; // Image extent (adjust based on your image dimensions)
         const center = [
-            (imageExtent[0] + imageExtent[2]) / 2,
-            (imageExtent[1] + imageExtent[3]) / 2,
+            (imageExtent[0] + imageExtent[2]) / 2, // Center X
+            (imageExtent[1] + imageExtent[3]) / 2, // Center Y
         ];
 
+        // Create the image layer for the floor image
         const imageLayer = new ImageLayer({
             source: new Static({
                 url: floorImage,
@@ -51,7 +52,7 @@ const miniMap = () => {
 
         // Create the door icon feature
         const featureIcon = new Feature({
-            geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]),
+            geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]), // Position at 75% of image width and height
         });
 
         featureIconRef.current = featureIcon;
@@ -70,7 +71,7 @@ const miniMap = () => {
 
         // Create the red dot feature
         const featurePoint = new Feature({
-            geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]),
+            geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]), // Position at center
         });
 
         featurePointRef.current = featurePoint;
@@ -85,18 +86,24 @@ const miniMap = () => {
 
         featurePoint.setStyle(pointStyle);
 
-        // Create a vector layer and add both features
+        // Create a vector source and add both features
+        const vectorSrc = new VectorSource({
+            features: [featureIcon, featurePoint],
+        });
+
+        setVectorSource(vectorSrc);
+
+        // Create a vector layer and add the vector source
         const vectorLayer = new VectorLayer({
-            source: new VectorSource({
-                features: [featureIcon, featurePoint],
-            }),
+            source: vectorSrc,
         });
 
         vectorLayerRef.current = vectorLayer;
 
+        // Create the map
         const newMap = new Map({
             target: mapRef.current,
-            layers: [imageLayer, vectorLayer],
+            layers: [imageLayer, vectorLayer], // Add the image layer and vector layer
             view: new View({
                 center: center,
                 zoom: 1,
@@ -106,6 +113,7 @@ const miniMap = () => {
 
         setMap(newMap);
 
+        // Cleanup on unmount
         return () => {
             if (newMap) {
                 newMap.setTarget(null);
@@ -113,27 +121,37 @@ const miniMap = () => {
         };
     }, []);
 
-    // ✅ Function to remove selected feature
+    // Function to remove selected feature
     const removeFeature = () => {
         if (vectorLayerRef.current) {
             const source = vectorLayerRef.current.getSource();
+
             if (selectedFeature === "redDot" && featurePointRef.current) {
-                source.removeFeature(featurePointRef.current);
+                setRemovedFeatures([...removedFeatures, featurePointRef.current]); // Add to removed features
+                source.removeFeature(featurePointRef.current); // Remove the red dot
+            } else if (selectedFeature === "doorIcon" && featureIconRef.current) {
+                setRemovedFeatures([...removedFeatures, featureIconRef.current]); // Add to removed features
+                source.removeFeature(featureIconRef.current); // Remove the door icon
+            } else if (selectedFeature === "removeAll") {
+                const features = source.getFeatures(); // Get all features
+                setRemovedFeatures([...removedFeatures, ...features]); // Add all features to removed features
+                source.clear(); // Remove all features
             }
-            if (selectedFeature === "doorIcon" && featureIconRef.current) {
-                source.removeFeature(featureIconRef.current);
-            }
-            if (selectedFeature === "remveall" && featureIconRef.current) {
-                const source = vectorLayerRef.current.getSource();
-                source.clear(); // Removes all features at once
-            }
+        }
+    };
+
+    // Function to restore all removed features
+    const restoreAllFeatures = () => {
+        if (vectorSource && removedFeatures.length > 0) {
+            vectorSource.addFeatures(removedFeatures); // Restore all removed features
+            setRemovedFeatures([]); // Clear the removed features list
         }
     };
 
     return (
         <div>
             {/* Material-UI Controls */}
-            <Box sx={{  zIndex: 1000, display: "flex", gap: 2 }}>
+            <Box sx={{ zIndex: 1000, display: "flex", gap: 2, padding: 2 }}>
                 <FormControl size="small" sx={{ minWidth: 150 }}>
                     <InputLabel>Select Feature</InputLabel>
                     <Select
@@ -146,18 +164,25 @@ const miniMap = () => {
                                 {option}
                             </MenuItem>
                         ))}
-
                     </Select>
                 </FormControl>
                 <Button variant="contained" color="error" onClick={removeFeature}>
                     Remove
                 </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={restoreAllFeatures}
+                    disabled={removedFeatures.length === 0}
+                >
+                    Restore All Features
+                </Button>
             </Box>
 
             {/* Map Container */}
-            <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />
+            <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />
         </div>
     );
 };
 
-export default miniMap;
+export default MiniMap;
