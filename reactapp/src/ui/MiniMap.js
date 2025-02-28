@@ -1,46 +1,41 @@
 ﻿import React, { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
-import { Map, View } from "ol";
+import { Map, View, Overlay } from "ol";
 import ImageLayer from "ol/layer/Image";
 import Static from "ol/source/ImageStatic";
 import { Point } from "ol/geom";
-import { Vector as VectorLayer } from "ol/layer";
-import { Vector as VectorSource } from "ol/source";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
+import Translate from "ol/interaction/Translate";
 
-// Material-UI imports
-import { FormControl, InputLabel, MenuItem, Select, Button, Box } from "@mui/material";
+// Material-UI
+import { FormControl, InputLabel, MenuItem, Select, Button, Box, Paper, Typography } from "@mui/material";
 
-// Import images (ensure correct paths)
+// Images
 import doorBlue from "../Image/door-blue.png";
 import floorImage from "../Image/floor.png";
 
-const miniMap = () => {
-
-    const featureOptions = [
-        'redDot', // Red
-        'doorIcon', // Green
-        'remveall', // Blue
-    ];
-
-
+const MoveMap = () => {
+    const featureOptions = ['redDot', 'doorIcon', 'removeAll'];
     const mapRef = useRef(null);
     const vectorLayerRef = useRef(null);
     const featureIconRef = useRef(null);
     const featurePointRef = useRef(null);
+    const popupRef = useRef(null);
 
     const [map, setMap] = useState(null);
     const [selectedFeature, setSelectedFeature] = useState("redDot");
+    const [vectorSource, setVectorSource] = useState(null);
+    const [removedFeatures, setRemovedFeatures] = useState([]);
+    const [popupContent, setPopupContent] = useState("");
 
     useEffect(() => {
         if (!mapRef.current) return;
 
-        const imageExtent = [0, 0, 800, 600]; // Image extent
-        const center = [
-            (imageExtent[0] + imageExtent[2]) / 2,
-            (imageExtent[1] + imageExtent[3]) / 2,
-        ];
+        const imageExtent = [0, 0, 800, 600];
+        const center = [(imageExtent[0] + imageExtent[2]) / 2, (imageExtent[1] + imageExtent[3]) / 2];
 
         const imageLayer = new ImageLayer({
             source: new Static({
@@ -49,11 +44,10 @@ const miniMap = () => {
             }),
         });
 
-        // Create the door icon feature
         const featureIcon = new Feature({
             geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]),
+            name: "Door Icon", // Add name property
         });
-
         featureIconRef.current = featureIcon;
 
         const iconStyle = new Style({
@@ -65,14 +59,12 @@ const miniMap = () => {
                 anchorYUnits: "fraction",
             }),
         });
-
         featureIcon.setStyle(iconStyle);
 
-        // Create the red dot feature
         const featurePoint = new Feature({
             geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]),
+            name: "Red Dot", // Add name property
         });
-
         featurePointRef.current = featurePoint;
 
         const pointStyle = new Style({
@@ -82,16 +74,15 @@ const miniMap = () => {
                 stroke: new Stroke({ color: "white", width: 2 }),
             }),
         });
-
         featurePoint.setStyle(pointStyle);
 
-        // Create a vector layer and add both features
-        const vectorLayer = new VectorLayer({
-            source: new VectorSource({
-                features: [featureIcon, featurePoint],
-            }),
+        const vectorSrc = new VectorSource({
+            features: [featureIcon, featurePoint],
         });
 
+        setVectorSource(vectorSrc);
+
+        const vectorLayer = new VectorLayer({ source: vectorSrc });
         vectorLayerRef.current = vectorLayer;
 
         const newMap = new Map({
@@ -104,60 +95,97 @@ const miniMap = () => {
             }),
         });
 
+        const translateInteraction = new Translate({ layers: [vectorLayer] });
+        newMap.addInteraction(translateInteraction);
+
+        // **Create the popup overlay**
+        const popupOverlay = new Overlay({
+            element: popupRef.current,
+            positioning: "bottom-center",
+            autoPan: true,
+            autoPanAnimation: { duration: 250 },
+        });
+        newMap.addOverlay(popupOverlay);
+
+        newMap.on("click", (event) => {
+            const feature = newMap.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+            if (feature) {
+                setPopupContent(feature.get("name")); // Show feature name in popup
+                popupOverlay.setPosition(event.coordinate);
+                popupRef.current.style.display = "block";
+            } else {
+                popupRef.current.style.display = "none";
+            }
+        });
+
         setMap(newMap);
 
         return () => {
-            if (newMap) {
-                newMap.setTarget(null);
-            }
+            if (newMap) newMap.setTarget(null);
         };
     }, []);
 
-    // ✅ Function to remove selected feature
     const removeFeature = () => {
         if (vectorLayerRef.current) {
             const source = vectorLayerRef.current.getSource();
             if (selectedFeature === "redDot" && featurePointRef.current) {
+                setRemovedFeatures([...removedFeatures, featurePointRef.current]);
                 source.removeFeature(featurePointRef.current);
-            }
-            if (selectedFeature === "doorIcon" && featureIconRef.current) {
+            } else if (selectedFeature === "doorIcon" && featureIconRef.current) {
+                setRemovedFeatures([...removedFeatures, featureIconRef.current]);
                 source.removeFeature(featureIconRef.current);
+            } else if (selectedFeature === "removeAll") {
+                const features = source.getFeatures();
+                setRemovedFeatures([...removedFeatures, ...features]);
+                source.clear();
             }
-            if (selectedFeature === "remveall" && featureIconRef.current) {
-                const source = vectorLayerRef.current.getSource();
-                source.clear(); // Removes all features at once
-            }
+        }
+    };
+
+    const restoreAllFeatures = () => {
+        if (vectorSource && removedFeatures.length > 0) {
+            vectorSource.addFeatures(removedFeatures);
+            setRemovedFeatures([]);
         }
     };
 
     return (
         <div>
-            {/* Material-UI Controls */}
-            <Box sx={{  zIndex: 1000, display: "flex", gap: 2 }}>
+            <Box sx={{ zIndex: 1000, display: "flex", gap: 2, padding: 2 }}>
                 <FormControl size="small" sx={{ minWidth: 150 }}>
                     <InputLabel>Select Feature</InputLabel>
-                    <Select
-                        value={selectedFeature}
-                        onChange={(e) => setSelectedFeature(e.target.value)}
-                        label="Select Feature"
-                    >
+                    <Select value={selectedFeature} onChange={(e) => setSelectedFeature(e.target.value)}>
                         {featureOptions.map((option) => (
                             <MenuItem key={option} value={option}>
                                 {option}
                             </MenuItem>
                         ))}
-
                     </Select>
                 </FormControl>
                 <Button variant="contained" color="error" onClick={removeFeature}>
                     Remove
                 </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={restoreAllFeatures}
+                    disabled={removedFeatures.length === 0}
+                >
+                    Restore All Features
+                </Button>
             </Box>
 
             {/* Map Container */}
-            <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />
+            <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />
+
+            {/* Popup Element */}
+            <div ref={popupRef} style={{ display: "none", position: "absolute", zIndex: 1000 }}>
+                <Paper elevation={3} sx={{ padding: 2, bgcolor: "white" }}>
+                    <Typography variant="body1">{popupContent}</Typography>
+                </Paper>
+            </div>
         </div>
     );
 };
 
-export default miniMap;
+export default MoveMap;
