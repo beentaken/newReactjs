@@ -20,7 +20,7 @@ import './App.css';
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
-const Contact = lazy(() => wait(1000).then(() => import('./Pages/Contact')));
+const Contact = lazy(() => wait(1000).then(() => import('./Pages/Contact'))); 
 const About = lazy(() => import('./Pages/About'));
 
 function App() {
