@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "webapi\\webapi.csproj",
+        "Action": "Start",
+        "DebugTarget": "GmsApi"
+      },
+      {
+        "Path": "reactapp\\reactapp.esproj",
+        "Action": "Start",
+        "DebugTarget": "localhost (Edge)"
+      }
+    ]
+  }
+]

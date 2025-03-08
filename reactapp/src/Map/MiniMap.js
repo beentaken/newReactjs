@@ -15,9 +15,10 @@ import { FormControl, InputLabel, MenuItem, Select, Button, Box, Paper, Typograp
 
 // Images
 import doorBlue from "../Image/door-blue.png";
+import doorRed from "../Image/door-red.png";
 import floorImage from "../Image/floor.png";
 
-const MoveMap = () => {
+const MiniMap = () => {
     const featureOptions = ['redDot', 'doorIcon', 'removeAll'];
     const mapRef = useRef(null);
     const vectorLayerRef = useRef(null);
@@ -31,7 +32,28 @@ const MoveMap = () => {
     const [removedFeatures, setRemovedFeatures] = useState([]);
     const [popupContent, setPopupContent] = useState("");
 
+    const fetchRandomCoordinates = async () => {
+        try {
+            const responseminimap = await fetch('minimap');
+            const dataminimap = await responseminimap.json();
+            console.log("Random Coordinates:", dataminimap);
+            return dataminimap;
+        } catch (error) {
+            console.error("Failed to fetch coordinates:", error);
+            return null;
+        }
+    };
+
     useEffect(() => {
+        const fetchData = async () => {
+            const coordinates = await fetchRandomCoordinates();
+            if (coordinates) {
+                console.log("Fetched Coordinates:", coordinates);
+            }
+        };
+
+        fetchData(); // Call the async function
+
         if (!mapRef.current) return;
 
         const imageExtent = [0, 0, 800, 600];
@@ -41,12 +63,18 @@ const MoveMap = () => {
             source: new Static({
                 url: floorImage,
                 imageExtent: imageExtent,
+                imageLoadFunction: (image, src) => {
+                    image.getImage().src = src;
+                    image.getImage().onerror = () => {
+                        console.error("Failed to load image:", src);
+                    };
+                },
             }),
         });
 
         const featureIcon = new Feature({
             geometry: new Point([imageExtent[2] * 0.75, imageExtent[3] * 0.75]),
-            name: "Door Icon", // Add name property
+            name: "Door Icon",
         });
         featureIconRef.current = featureIcon;
 
@@ -63,7 +91,7 @@ const MoveMap = () => {
 
         const featurePoint = new Feature({
             geometry: new Point([imageExtent[2] * 0.5, imageExtent[3] * 0.5]),
-            name: "Red Dot", // Add name property
+            name: "Red Dot",
         });
         featurePointRef.current = featurePoint;
 
@@ -98,7 +126,6 @@ const MoveMap = () => {
         const translateInteraction = new Translate({ layers: [vectorLayer] });
         newMap.addInteraction(translateInteraction);
 
-        // **Create the popup overlay**
         const popupOverlay = new Overlay({
             element: popupRef.current,
             positioning: "bottom-center",
@@ -110,9 +137,13 @@ const MoveMap = () => {
         newMap.on("click", (event) => {
             const feature = newMap.forEachFeatureAtPixel(event.pixel, (feat) => feat);
             if (feature) {
-                setPopupContent(feature.get("name")); // Show feature name in popup
+                setPopupContent(feature.get("name"));
                 popupOverlay.setPosition(event.coordinate);
                 popupRef.current.style.display = "block";
+
+                setTimeout(() => {
+                    popupRef.current.style.display = "none";
+                }, 3000);
             } else {
                 popupRef.current.style.display = "none";
             }
@@ -126,7 +157,7 @@ const MoveMap = () => {
     }, []);
 
     const removeFeature = () => {
-        if (vectorLayerRef.current) {
+        if (vectorLayerRef.current && vectorSource) {
             const source = vectorLayerRef.current.getSource();
             if (selectedFeature === "redDot" && featurePointRef.current) {
                 setRemovedFeatures([...removedFeatures, featurePointRef.current]);
@@ -175,10 +206,8 @@ const MoveMap = () => {
                 </Button>
             </Box>
 
-            {/* Map Container */}
             <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />
 
-            {/* Popup Element */}
             <div ref={popupRef} style={{ display: "none", position: "absolute", zIndex: 1000 }}>
                 <Paper elevation={3} sx={{ padding: 2, bgcolor: "white" }}>
                     <Typography variant="body1">{popupContent}</Typography>
@@ -188,4 +217,4 @@ const MoveMap = () => {
     );
 };
 
-export default MoveMap;
+export default MiniMap;

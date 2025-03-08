@@ -4,6 +4,7 @@ const context = [
     "/weatherforecast",
     "/location",
     "/menu",
+    "/minimap",
 ];
 
 module.exports = function (app) {
@@ -15,4 +16,4 @@ module.exports = function (app) {
     });
 
     app.use(appProxy);
-};
+}; 
