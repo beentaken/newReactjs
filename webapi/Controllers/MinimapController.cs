@@ -5,7 +5,7 @@ using webapi.Model;
 namespace webapi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")] // Explicitly set API prefix
 public class MinimapController : ControllerBase
 {
     private static readonly string[] Icons = new[]
@@ -20,17 +20,26 @@ public class MinimapController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetCoordinates")]
+    [HttpGet("GetCoordinates")]
     public IEnumerable<Minimap> GetCoordinates()
     {
-
-        var minimapItems = Enumerable.Range(1, 5).Select(index => new Minimap
+        return Enumerable.Range(1, 5).Select(index => new Minimap
         {
-            Id = index + 1, // Assuming Minimap has an Id property
-        }).ToArray();
-
-        return minimapItems;
+            Id = index
+        });
     }
+
+    [HttpGet("GetCoordinate/{id}")]
+    public ActionResult<Minimap> GetCoordinate(int id)
+    {
+        var item = new Minimap { Id = id };
+        if (item == null)
+        {
+            return NotFound("Coordinate not found");
+        }
+        return item;
+    }
+
 }
 
 // Move this class to a separate file if needed

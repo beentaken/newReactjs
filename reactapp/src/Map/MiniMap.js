@@ -34,21 +34,44 @@ const MiniMap = () => {
 
     const fetchRandomCoordinates = async () => {
         try {
-            const responseminimap = await fetch('minimap');
-            const dataminimap = await responseminimap.json();
-            console.log("Random Coordinates:", dataminimap);
-            return dataminimap;
+            const response = await fetch('http://localhost:7048/api/minimap/GetCoordinates'); // Adjust port if needed
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const data = await response.json();
+            return data;
         } catch (error) {
             console.error("Failed to fetch coordinates:", error);
             return null;
         }
     };
 
+    const fetchRandomCoordinate = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:7048/api/minimap/GetCoordinate/${id}`); // Include the id
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error("Failed to fetch coordinates:", error);
+            return null;
+        }
+    };
+
+
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchDatas = async () => {
             const coordinates = await fetchRandomCoordinates();
             if (coordinates) {
                 console.log("Fetched Coordinates:", coordinates);
+            }
+        };
+
+        fetchDatas(); // Call the async function
+
+
+        const fetchData = async () => {
+            const coordinate = await fetchRandomCoordinate(1); // Pass an id (e.g., 1)
+            if (coordinate) {
+                console.log("Fetched Coordinate:", coordinate);
             }
         };
 

@@ -41,6 +41,19 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("https://localhost:3000", "http://localhost:3000") // Allow React App
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -71,8 +84,10 @@ app.UseAuthentication();
 //app.UseHttpsRedirection(); // if got https
 
 
-app.UseAuthorization();
 
+app.UseAuthorization();
+// Use CORS policy
+app.UseCors("AllowReactApp");
 app.MapControllers();
 
 app.Run();
