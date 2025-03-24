@@ -49,6 +49,7 @@ const MiniMap = () => {
             const response = await fetch(`http://localhost:7048/api/minimap/GetCoordinate/${id}`); // Include the id
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
+
             return data;
         } catch (error) {
             console.error("Failed to fetch coordinates:", error);
@@ -62,6 +63,7 @@ const MiniMap = () => {
             const coordinates = await fetchRandomCoordinates();
             if (coordinates) {
                 console.log("Fetched Coordinates:", coordinates);
+
             }
         };
 
@@ -228,7 +230,6 @@ const MiniMap = () => {
                     Restore All Features
                 </Button>
             </Box>
-
             <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />
 
             <div ref={popupRef} style={{ display: "none", position: "absolute", zIndex: 1000 }}>
