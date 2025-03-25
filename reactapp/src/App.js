@@ -5,7 +5,7 @@ import Home from './Pages/Home';
 import PagesMain from './Pages/PagesMain';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
-import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, WebCamera, OpenDoor } from './ui/';
+import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor } from './ui/';
 import { LayerMap1, LayerMap, MiniMap } from './Map/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
@@ -27,6 +27,7 @@ const About = lazy(() => import('./Pages/About'));
 function App() {
     const pages = [
         { title: 'Home', path: '/' },
+        { title: 'Toastsample', path: '/toastsample' },
         { title: 'About', path: '/about' },
         { title: 'Contact', path: '/contact' },
         { title: 'CheckboxesGroup', path: '/CheckboxesGroup' },
@@ -44,6 +45,8 @@ function App() {
         { title: 'LayerMap', path: '/LayerMap' }, 
         { title: 'LayerMap1', path: '/LayerMap1' }, 
         { title: 'MiniMap', path: '/MiniMap' }, 
+
+        
     ]; 
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
@@ -62,6 +65,7 @@ function App() {
                         <ul>
                             <li><Link to="/">Home</Link></li>
                             <li><Link to="/about">About</Link></li>
+                            <li><Link to="/toastsample">Toastsample</Link></li>
                             <li><Link to="/contact">Contact</Link></li>
                             <li><Link to="/CheckboxesGroup">CheckboxesGroup</Link></li>
                             <li><Link to="/D4">D4</Link></li>
@@ -84,6 +88,7 @@ function App() {
                     <Suspense fallback={<div>Loading...</div>}>
                         <Routes>
                             <Route path="/" element={<LayerMap />} />
+                            <Route path="/toastsample" element={<Toastsample />} />
                             <Route path="/about" element={<About />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/CheckboxesGroup" element={<CheckboxesGroup biooptions={biooption} />} />
