@@ -26,7 +26,7 @@ const Dndreorder = () => {
         }
     ];
 
-    const [sortedList, setSortedList] = useState(initialList);
+    const [selectedAssets, setSelectedAssets] = useState(initialList);
 
     const sortList = (list) => {
         return list.slice().sort((first, second) => first.order - second.order);
@@ -37,41 +37,37 @@ const Dndreorder = () => {
             return;
         }
 
-        const newList = [...sortedList];
+        const newList = [...selectedAssets];
 
         if (destinationIndex === 0) {
             newList[sourceIndex].order = newList[0].order - 1;
-            setSortedList(sortList(newList));
+            setSelectedAssets(sortList(newList));
             return;
         }
 
         if (destinationIndex === newList.length - 1) {
             newList[sourceIndex].order = newList[newList.length - 1].order + 1;
-            setSortedList(sortList(newList));
+            setSelectedAssets(sortList(newList));
             return;
         }
 
         if (destinationIndex < sourceIndex) {
             newList[sourceIndex].order = (newList[destinationIndex].order + newList[destinationIndex - 1].order) / 2;
-            setSortedList(sortList(newList));
+            setSelectedAssets(sortList(newList));
             return;
         }
 
         newList[sourceIndex].order = (newList[destinationIndex].order + newList[destinationIndex + 1].order) / 2;
-        setSortedList(sortList(newList));
-    }
-
-    const ListElement = ({ item: { id } }) => {
-        return <div className="item"><div>{id}</div></div>;
+        setSelectedAssets(sortList(newList));
     }
 
     return (
         <div className="App">
             <ListManager
-                items={sortedList}
+                items={selectedAssets}
                 direction="horizontal"
                 maxItems={3}
-                render={item => <ListElement item={item} />}
+                render={asset => <div className="item"><div>{asset.id}</div></div>}
                 onDragEnd={reorderList}
             />
         </div>
