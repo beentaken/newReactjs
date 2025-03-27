@@ -5,7 +5,7 @@ import Home from './Pages/Home';
 import PagesMain from './Pages/PagesMain';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
-import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor } from './ui/';
+import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor, Dndreorder } from './ui/';
 import { LayerMap1, LayerMap, MiniMap } from './Map/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
@@ -45,7 +45,7 @@ function App() {
         { title: 'LayerMap', path: '/LayerMap' }, 
         { title: 'LayerMap1', path: '/LayerMap1' }, 
         { title: 'MiniMap', path: '/MiniMap' }, 
-
+        { title: 'Dndreorder', path: '/Dndreorder' }, 
         
     ]; 
     const biooption = [
@@ -81,6 +81,7 @@ function App() {
                             <li><Link to="/LayerMap">LayerMap</Link></li>
                             <li><Link to="/LayerMap1">LayerMap1</Link></li>
                             <li><Link to="/MiniMap">MiniMap</Link></li>
+                            <li><Link to="/Dndreorder">Dndreorder</Link></li>  
                         </ul>
                     </nav>
 
@@ -105,7 +106,8 @@ function App() {
                             <Route path="/about" element={<About />} />
                             <Route path="/OpenDoor" element={<OpenDoor />} />
                             <Route path="/LayerMap1" element={<LayerMap1 />} />
-                            <Route path="/MiniMap" element={<MiniMap />} />
+                            <Route path="/MiniMap" element={<MiniMap />} /> 
+                            <Route path="/Dndreorder" element={<Dndreorder />} /> 
                         </Routes>
                     </Suspense>
                 </div>
