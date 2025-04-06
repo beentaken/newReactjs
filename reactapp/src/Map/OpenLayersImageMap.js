@@ -11,7 +11,7 @@ import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 
 // Import image from assets (if in src/assets/)
-import doorBlue from "../Image/door-blue.png"; // Ensure correct path
+import doorBlue from "../Images/door-blue.png"; // Ensure correct path
 
 const OpenLayersImageMap = () => {
     const mapRef = useRef(null);

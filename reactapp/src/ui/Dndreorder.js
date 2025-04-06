@@ -1,36 +1,39 @@
 import React, { useState } from 'react';
 import { ListManager } from "react-beautiful-dnd-grid";
-import './style.css';
-
+import { Chip } from '@mui/material';
 const Dndreorder = () => {
     const initialList = [
         {
             id: "0",
-            order: 0
+            Name: "N0",
         },
         {
-            id: "1",
-            order: 1
+            id: "1", Name: "N1",
         },
         {
-            id: "2",
-            order: 2
+            id: "2", Name: "N2",
         },
         {
-            id: "3",
-            order: 3
+            id: "3", Name: "N3",
         },
         {
-            id: "4",
-            order: 4
+            id: "4", Name: "N4",
+        },
+        {
+            id: "5", Name: "N5",
+        },
+        {
+            id: "6", Name: "N6",
+        },
+        {
+            id: "8", Name: "N8",
+        },
+        {
+            id: "7", Name: "N7",
         }
     ];
 
     const [selectedAssets, setSelectedAssets] = useState(initialList);
-
-    const sortList = (list) => {
-        return list.slice().sort((first, second) => first.order - second.order);
-    }
 
     const reorderList = (sourceIndex, destinationIndex) => {
         if (destinationIndex === sourceIndex) {
@@ -39,26 +42,10 @@ const Dndreorder = () => {
 
         const newList = [...selectedAssets];
 
-        if (destinationIndex === 0) {
-            newList[sourceIndex].order = newList[0].order - 1;
-            setSelectedAssets(sortList(newList));
-            return;
-        }
+        // Swap the elements
+        [newList[sourceIndex], newList[destinationIndex]] = [newList[destinationIndex], newList[sourceIndex]];
 
-        if (destinationIndex === newList.length - 1) {
-            newList[sourceIndex].order = newList[newList.length - 1].order + 1;
-            setSelectedAssets(sortList(newList));
-            return;
-        }
-
-        if (destinationIndex < sourceIndex) {
-            newList[sourceIndex].order = (newList[destinationIndex].order + newList[destinationIndex - 1].order) / 2;
-            setSelectedAssets(sortList(newList));
-            return;
-        }
-
-        newList[sourceIndex].order = (newList[destinationIndex].order + newList[destinationIndex + 1].order) / 2;
-        setSelectedAssets(sortList(newList));
+        setSelectedAssets(newList);
     }
 
     return (
@@ -66,11 +53,23 @@ const Dndreorder = () => {
             <ListManager
                 items={selectedAssets}
                 direction="horizontal"
-                maxItems={3}
-                render={asset => <div className="item"><div>{asset.id}</div></div>}
+                maxItems={6}
+                render={asset => <Chip
+                    style={{ margin: "3px", cursor: "grab" }}
+                    label={asset.Name}
+                   
+                />}
                 onDragEnd={reorderList}
             />
+            {
+                selectedAssets.map((jo, index) => (
+                    <div key={index} style={{ margin: '10px 0' }}>
+                        <label>{`id: ${jo.id}, Name: ${jo.Name}`}</label>
+                    </div>
+                ))
+            }
         </div>
+
     );
 };
 

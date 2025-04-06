@@ -8,11 +8,6 @@ namespace webapi.Controllers;
 [Route("api/[controller]")] // Explicitly set API prefix
 public class MinimapController : ControllerBase
 {
-    private static readonly string[] Icons = new[]
-    {
-        "Dooor", "Location", "WeatherForecast"
-    };
-
     private readonly ILogger<MinimapController> _logger;
 
     public MinimapController(ILogger<MinimapController> logger)

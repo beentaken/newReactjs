@@ -77,5 +77,38 @@ namespace webapi.Controllers
         {
             public string SearchText { get; set; }
         }
+
+
+        [HttpGet("get-image")]
+        public IActionResult GetImage()
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var imagePath = Path.Combine(currentDirectory, "Images", "floor.png");
+
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return NotFound("Image not found.");
+            }
+
+            var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            return File(imageBytes, "image/jpeg");
+        }
+
+        [HttpGet("get-image-base64")]
+        public IActionResult GetImageBase64()
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var imagePath = Path.Combine(currentDirectory, "Images", "floor.png");
+
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return NotFound("Image not found.");
+            }
+
+            var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            var base64String = Convert.ToBase64String(imageBytes);
+
+            return Ok(new { imageBase64 = base64String });
+        }
     }
 }

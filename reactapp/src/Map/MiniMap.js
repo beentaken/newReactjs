@@ -14,9 +14,9 @@ import Translate from "ol/interaction/Translate";
 import { FormControl, InputLabel, MenuItem, Select, Button, Box, Paper, Typography } from "@mui/material";
 
 // Images
-import doorBlue from "../Image/door-blue.png";
-import doorRed from "../Image/door-red.png";
-import floorImage from "../Image/floor.png";
+import doorBlue from "../Images/door-blue.png";
+import doorRed from "../Images/door-red.png";
+import floorImage from "../Images/floor.png";
 
 const MiniMap = () => {
     const featureOptions = ['redDot', 'doorIcon', 'removeAll'];

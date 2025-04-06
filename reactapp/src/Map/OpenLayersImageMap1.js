@@ -10,8 +10,8 @@ import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 
 // Import images (ensure correct paths)
-import doorBlue from "../Image/door-blue.png";
-import floorImage from "../Image/floor.png";
+import doorBlue from "../Images/door-blue.png";
+import floorImage from "../Images/floor.png";
 
 const OpenLayersImageMap1 = () => {
     const mapRef = useRef(null);

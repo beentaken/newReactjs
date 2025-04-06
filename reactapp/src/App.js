@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './Pages/Home';
 import PagesMain from './Pages/PagesMain';
+import ImageViewer from './ImageUi/ImageViewer';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor, Dndreorder } from './ui/';
@@ -46,6 +47,7 @@ function App() {
         { title: 'LayerMap1', path: '/LayerMap1' }, 
         { title: 'MiniMap', path: '/MiniMap' }, 
         { title: 'Dndreorder', path: '/Dndreorder' }, 
+        { title: 'ImageViewer', path: '/ImageViewer' }, 
         
     ]; 
     const biooption = [
@@ -82,9 +84,10 @@ function App() {
                             <li><Link to="/LayerMap1">LayerMap1</Link></li>
                             <li><Link to="/MiniMap">MiniMap</Link></li>
                             <li><Link to="/Dndreorder">Dndreorder</Link></li>  
+                            <li><Link to="/ImageViewer">ImageViewer</Link></li>  
                         </ul>
                     </nav>
-
+  
                     {/* Display loading while components are being delayed */}
                     <Suspense fallback={<div>Loading...</div>}>
                         <Routes>
@@ -108,12 +111,14 @@ function App() {
                             <Route path="/LayerMap1" element={<LayerMap1 />} />
                             <Route path="/MiniMap" element={<MiniMap />} /> 
                             <Route path="/Dndreorder" element={<Dndreorder />} /> 
+                            <Route path="/ImageViewer" element={<ImageViewer />} /> 
+                            
                         </Routes>
                     </Suspense>
                 </div>
             </div>
         </Router>
     );
-}
+} 
 
 export default App;
