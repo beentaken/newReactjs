@@ -5,7 +5,6 @@
 /node_modules
 /package-lock.json
 /package.json
-/reactapp/README.md
 /reactapp/reactapp.esproj
 
 /webapi/bin/Debug/net8.0
