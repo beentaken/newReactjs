@@ -1,2 +1,1 @@
-C:\Users\11070\source\repos\Reactjs\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache
-C:\Users\11070\Source\Repos\newReactjs\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache
+C:\Users\11070\Source\Repos\nReactjs\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache

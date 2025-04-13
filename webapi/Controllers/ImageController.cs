@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace webapi.Controllers
 {
@@ -78,6 +79,10 @@ namespace webapi.Controllers
             public string SearchText { get; set; }
         }
 
+        private static readonly string[] Icons = new[]
+{
+            "doorblue", "doorred", "doorgreen", "dooryellow", "doorwhite"
+        };
 
         [HttpGet("get-image")]
         public IActionResult GetImage()
@@ -109,6 +114,22 @@ namespace webapi.Controllers
             var base64String = Convert.ToBase64String(imageBytes);
 
             return Ok(new { imageBase64 = base64String });
+        }
+        [HttpGet("get-randomicons")]
+        public IActionResult GetRandomIcon()
+        {
+            var random = new Random();
+            var randomIcon = Icons[random.Next(Icons.Length)];
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var imagePath = Path.Combine(currentDirectory, "Images", $"{randomIcon}.png");
+
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return NotFound("Image not found.");
+            }
+
+            var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            return File(imageBytes, "image/jpeg");
         }
     }
 }

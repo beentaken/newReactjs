@@ -7,7 +7,7 @@ import ImageViewer from './ImageUi/ImageViewer';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor, Dndreorder } from './ui/';
-import { LayerMap1, LayerMap, MiniMap } from './Map/';
+import { LayerMap1, LayerMap, MiniMapIcons } from './Map/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
 import AnotherTabs from "./Pages/AnotherTabs";
@@ -45,7 +45,7 @@ function App() {
         { title: 'OpenDoor', path: '/OpenDoor' }, 
         { title: 'LayerMap', path: '/LayerMap' }, 
         { title: 'LayerMap1', path: '/LayerMap1' }, 
-        { title: 'MiniMap', path: '/MiniMap' }, 
+        { title: 'MiniMapIcons', path: '/MiniMapIcons' }, 
         { title: 'Dndreorder', path: '/Dndreorder' }, 
         { title: 'ImageViewer', path: '/ImageViewer' }, 
         
@@ -82,7 +82,7 @@ function App() {
                             <li><Link to="/OpenDoor">OpenDoor</Link></li>
                             <li><Link to="/LayerMap">LayerMap</Link></li>
                             <li><Link to="/LayerMap1">LayerMap1</Link></li>
-                            <li><Link to="/MiniMap">MiniMap</Link></li>
+                            <li><Link to="/MiniMapIcons">MiniMapIcons</Link></li>
                             <li><Link to="/Dndreorder">Dndreorder</Link></li>  
                             <li><Link to="/ImageViewer">ImageViewer</Link></li>  
                         </ul>
@@ -109,7 +109,7 @@ function App() {
                             <Route path="/about" element={<About />} />
                             <Route path="/OpenDoor" element={<OpenDoor />} />
                             <Route path="/LayerMap1" element={<LayerMap1 />} />
-                            <Route path="/MiniMap" element={<MiniMap />} /> 
+                            <Route path="/MiniMapIcons" element={<MiniMapIcons />} /> 
                             <Route path="/Dndreorder" element={<Dndreorder />} /> 
                             <Route path="/ImageViewer" element={<ImageViewer />} /> 
                             
