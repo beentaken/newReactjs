@@ -5,7 +5,7 @@
       {
         "Path": "webapi\\webapi.csproj",
         "Action": "Start",
-        "DebugTarget": "GmsApi"
+        "DebugTarget": "IIS Express"
       },
       {
         "Path": "reactapp\\reactapp.esproj",
