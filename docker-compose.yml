@@ -3,9 +3,20 @@ version: '3.8'
 services:
   webapi:
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ./webapi
+      dockerfile: Dockerfile
     ports:
       - "7048:7048"
-    working_dir: /app
+    working_dir: /webapi
     command: ["dotnet", "webapi.dll"]
+
+  webapp:
+    build:
+      context: ./reactapp
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - PORT=80
+    working_dir: /reactapp
+    command: ["sh", "-c", "PORT=80 npm run start"]

@@ -10,3 +10,5 @@ npm install @mui/material @emotion/react @emotion/styled @mui/styles
 npm install @material-ui/icons
 npm install xlsx
 npm install --legacy-peer-deps
+
+docker compose -f docker-compose.yml up -d
