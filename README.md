@@ -9,6 +9,7 @@ npm install @mui/icons-material @material-ui/core
 npm install @mui/material @emotion/react @emotion/styled @mui/styles
 npm install @material-ui/icons
 npm install xlsx
+npm install react-beautiful-dnd --legacy-peer-deps
 npm install --legacy-peer-deps
 
 docker compose -f docker-compose.yml up -d
