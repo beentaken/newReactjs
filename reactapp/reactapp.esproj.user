@@ -7,7 +7,7 @@
   "type": "edge",
   "request": "launch",
   "url": "https://localhost:3000",
-  "webRoot": "C:\\Users\\11070\\Source\\Repos\\newReactjs\\reactapp"
+  "webRoot": "C:\\Users\\11070\\source\\repos\\newReactjs\\reactapp"
 }</LaunchJsonTarget>
   </PropertyGroup>
 </Project>
