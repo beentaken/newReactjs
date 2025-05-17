@@ -1,17 +1,16 @@
-﻿import React, { useEffect, useRef, useState } from "react";
-import "ol/ol.css";
-import { Map, View, Overlay } from "ol";
-import ImageLayer from "ol/layer/Image";
-import Static from "ol/source/ImageStatic";
+﻿import { Feature, Map, Overlay, View } from "ol";
 import { Point } from "ol/geom";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { Feature } from "ol";
-import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 import Translate from "ol/interaction/Translate";
+import ImageLayer from "ol/layer/Image";
+import VectorLayer from "ol/layer/Vector";
+import "ol/ol.css";
+import Static from "ol/source/ImageStatic";
+import VectorSource from "ol/source/Vector";
+import { Circle, Fill, Icon, Stroke, Style } from "ol/style";
+import React, { useEffect, useRef, useState } from "react";
 
 // Material-UI
-import { FormControl, InputLabel, MenuItem, Select, Button, Box, Paper, Typography } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Typography } from "@mui/material";
 
 // Images
 import doorBlue from "../Images/door-blue.png";
@@ -21,7 +20,7 @@ import floorImage from "../Images/floor.png";
 const MiniMapIcons = () => {
     const featureOptions = ['redDot', 'doorIcon', 'removeAll'];
     const mapRef = useRef(null);
-    const vectorLayerRef = useRef(null);
+    const locationLayer = useRef(null);
     const featureIconRef = useRef(null);
     const featurePointRef = useRef(null);
     const popupRef = useRef(null);
@@ -31,7 +30,7 @@ const MiniMapIcons = () => {
     const [vectorSource, setVectorSource] = useState(null);
     const [removedFeatures, setRemovedFeatures] = useState([]);
     const [popupContent, setPopupContent] = useState("");
-
+    const [doorColor, setDoorColor] = useState("blue");
     const fetchRandomCoordinates = async () => {
         try {
             const response = await fetch('http://localhost:7048/api/minimap/GetCoordinates'); // Adjust port if needed
@@ -56,7 +55,22 @@ const MiniMapIcons = () => {
             return null;
         }
     };
-
+    useEffect(() => {
+        if (featureIconRef.current) {
+            const iconUrl = doorColor === "red" ? doorRed : doorBlue;
+            featureIconRef.current.setStyle(
+                new Style({
+                    image: new Icon({
+                        src: iconUrl,
+                        scale: 0.1,
+                        anchor: [0.5, 1],
+                        anchorXUnits: "fraction",
+                        anchorYUnits: "fraction",
+                    }),
+                })
+            );
+        }
+    }, [doorColor]);
 
     useEffect(() => {
         const fetchDatas = async () => {
@@ -129,18 +143,18 @@ const MiniMapIcons = () => {
         });
         featurePoint.setStyle(pointStyle);
 
-        const vectorSrc = new VectorSource({
+        const vectorSource = new VectorSource({
             features: [featureIcon, featurePoint],
         });
 
-        setVectorSource(vectorSrc);
+        setVectorSource(vectorSource);
 
-        const vectorLayer = new VectorLayer({ source: vectorSrc });
-        vectorLayerRef.current = vectorLayer;
+        const featuresLayer = new VectorLayer({ source: vectorSource });
+        locationLayer.current = featuresLayer;
 
         const newMap = new Map({
             target: mapRef.current,
-            layers: [imageLayer, vectorLayer],
+            layers: [imageLayer, featuresLayer],
             view: new View({
                 center: center,
                 zoom: 1,
@@ -148,7 +162,7 @@ const MiniMapIcons = () => {
             }),
         });
 
-        const translateInteraction = new Translate({ layers: [vectorLayer] });
+        const translateInteraction = new Translate({ layers: [featuresLayer] });
         newMap.addInteraction(translateInteraction);
 
         const popupOverlay = new Overlay({
@@ -182,8 +196,8 @@ const MiniMapIcons = () => {
     }, []);
 
     const removeFeature = () => {
-        if (vectorLayerRef.current && vectorSource) {
-            const source = vectorLayerRef.current.getSource();
+        if (locationLayer.current && vectorSource) {
+            const source = locationLayer.current.getSource();
             if (selectedFeature === "redDot" && featurePointRef.current) {
                 setRemovedFeatures([...removedFeatures, featurePointRef.current]);
                 source.removeFeature(featurePointRef.current);
@@ -203,6 +217,38 @@ const MiniMapIcons = () => {
             vectorSource.addFeatures(removedFeatures);
             setRemovedFeatures([]);
         }
+    };
+
+
+    const AddFeatures = () => {
+        // Log existing features
+        vectorSource.getFeatures().forEach((feature, index) => {
+            console.log(`Before - Feature ${index}:`);
+            console.log('  ID:', feature.getId());
+            console.log('  Geometry:', feature.getGeometry());
+            console.log('  Properties:', feature.getProperties());
+        });
+
+        // Create a new feature
+        const featureIcon = new Feature({
+            geometry: new Point([10, 100]),
+            ID: 1,
+            label: "Door Icons", // example custom property
+        });
+
+        // Optional: set a feature ID
+  //      featureIcon.setId('door-1');
+
+        // Add feature to the vector source
+        vectorSource.addFeature(featureIcon);
+
+        // Log features again
+        vectorSource.getFeatures().forEach((feature, index) => {
+            console.log(`After - Feature ${index}:`);
+            console.log('  ID:', feature.getId());
+            console.log('  Geometry:', feature.getGeometry());
+            console.log('  Properties:', feature.getProperties());
+        });
     };
 
     return (
@@ -232,10 +278,17 @@ const MiniMapIcons = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={restoreAllFeatures}
+                    onClick={AddFeatures}
 
                 >
-                    Restore All Features
+                    Add Features
+                </Button>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => setDoorColor((prev) => (prev === "blue" ? "red" : "blue"))}
+                >
+                    Toggle Door Color
                 </Button>
                 <img src="http://localhost:7048/Image/get-randomicons" alt="My Image" />
             </Box>
