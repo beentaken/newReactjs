@@ -10,7 +10,10 @@ import { Circle, Fill, Icon, Stroke, Style } from "ol/style";
 import React, { useEffect, useRef, useState } from "react";
 
 // Material-UI
-import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Typography } from "@mui/material";
+import {
+    Box, Button, FormControl, InputLabel,
+    MenuItem, Paper, Select, Typography
+} from "@mui/material";
 
 // Images
 import doorBlue from "../Images/door-blue.png";
@@ -31,6 +34,16 @@ const MiniMapIcons = () => {
     const [removedFeatures, setRemovedFeatures] = useState([]);
     const [popupContent, setPopupContent] = useState("");
     const [doorColor, setDoorColor] = useState("blue");
+    const [dragCoord, setDragCoord] = useState(null);
+
+    const WordfeatureIcon = new Feature({
+        geometry: new Point([800, 600]),
+
+        label: "Door Icons", // example custom property
+    });
+
+
+
     const fetchRandomCoordinates = async () => {
         try {
             const response = await fetch('http://localhost:7048/api/minimap/GetCoordinates'); // Adjust port if needed
@@ -164,7 +177,9 @@ const MiniMapIcons = () => {
 
         const translateInteraction = new Translate({ layers: [featuresLayer] });
         newMap.addInteraction(translateInteraction);
-
+        translateInteraction.on('translating', (event) => {
+            setDragCoord(event.coordinate);
+        });
         const popupOverlay = new Overlay({
             element: popupRef.current,
             positioning: "bottom-center",
@@ -219,6 +234,12 @@ const MiniMapIcons = () => {
         }
     };
 
+    const AddWordFeatures = () => {
+        vectorSource.addFeature(WordfeatureIcon);
+        var sWordfeatureIcon = WordfeatureIcon;
+
+        vectorSource.addFeature(sWordfeatureIcon);
+    };
 
     const AddFeatures = () => {
         // Log existing features
@@ -241,6 +262,21 @@ const MiniMapIcons = () => {
 
         // Add feature to the vector source
         vectorSource.addFeature(featureIcon);
+
+
+        const featureIcon2 = new Feature({
+            geometry: new Point([10, 100]),
+            ID: 1,
+            label: "Door Icons", // example custom property
+        });
+
+        // Optional: set a feature ID
+        //      featureIcon.setId('door-1');
+
+        // Add feature to the vector source
+        vectorSource.addFeature(featureIcon2);
+        vectorSource.addFeature(WordfeatureIcon);
+        
 
         // Log features again
         vectorSource.getFeatures().forEach((feature, index) => {
@@ -285,12 +321,21 @@ const MiniMapIcons = () => {
                 </Button>
                 <Button
                     variant="contained"
+                    color="primary"
+                    onClick={AddWordFeatures}
+
+                >
+                    Add Word Features
+                </Button>
+                <Button
+                    variant="contained"
                     color="secondary"
                     onClick={() => setDoorColor((prev) => (prev === "blue" ? "red" : "blue"))}
                 >
                     Toggle Door Color
                 </Button>
                 <img src="http://localhost:7048/Image/get-randomicons" alt="My Image" />
+                {dragCoord}
             </Box>
             <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />
 
