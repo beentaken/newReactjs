@@ -23,5 +23,9 @@ $Duration = "00:01:40.04"
 # Construct the FFmpeg command with the duration
 $ffmpegCommand = ".\ffmpeg1 -rtsp_transport tcp -i `"$InputPath`" -c:v libx264 -preset ultrafast -tune zerolatency -movflags +frag_keyframe+empty_moov -t $Duration -f mp4 -y `"$OutputPath`""
 
+$ffprobe = ".\ffprobe -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 -rtsp_transport tcp -i `"$InputPath`""
+
+
 # Execute the command
 Invoke-Expression $ffmpegCommand
+Invoke-Expression $ffprobe
