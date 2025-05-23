@@ -32,3 +32,5 @@ ffmpeg -rtsp_transport tcp -stimeout 10000000 -i "rtsp://admin:User@123@10.128.3
 ffmpeg -rtsp_transport tcp -i "rtsp://admin:User@123@10.128.3.1:554/cam/playback?channel=1&starttime=20240521T080000Z&endtime=20240521T083000Z" ^
 -c:v libx264 -preset ultrafast -tune zerolatency ^
 -movflags +frag_keyframe+empty_moov -f mp4 -y output.mp4
+
+0:00:10.000000 convert to timesanp
