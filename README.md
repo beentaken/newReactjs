@@ -38,3 +38,5 @@ ffprobe -rtsp_transport tcp -count_frames -select_streams v:0 -show_entries stre
 [25-05-26 10:12:55.528 INF] [ERR] frame=  139 fps= 13 q=20.0 size=       0KiB time=00:00:09.26 bitrate=   0.0kbits/s dup=0 drop=3 speed=0.856x    
 [25-05-26 10:12:56.043 INF] [ERR] frame=  139 fps= 12 q=20.0 size=       0KiB time=00:00:09.26 bitrate=   0.0kbits/s dup=0 drop=3 speed=0.817x    
 [25-05-26 10:12:56.559 INF] [ERR] frame=  139 fps= 12 q=20.0 size=       0KiB time=00:00:09.26 bitrate=   0.0kbits/s dup=0 drop=3 speed=0.782x 
+
+ffmpeg -i input -c:v libx264 -preset fast -crf 23 -tag:v avc1 -c:a aac -b:a 128k -movflags +faststart output.mp4
