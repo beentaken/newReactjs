@@ -45,4 +45,7 @@ ffprobe -rtsp_transport tcp -count_frames -select_streams v:0 -show_entries stre
 
 ffmpeg -i input -c:v libx264 -preset fast -crf 23 -tag:v avc1 -c:a aac -b:a 128k -movflags +faststart output.mp4
 
--rtsp_transport tcp -i \"{rtspUrl}\" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -t {duration.Value.TotalSeconds} -movflags +frag_keyframe+empty_moov+faststart -f mp4 -y "\"{outputPath}\"
+-rtsp_transport tcp -i \"{rtspUrl}\" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -t {duration.Value.TotalSeconds} -movflags +frag_keyframe+empty_moov+faststart -f mp4 -y "\"
+{outputPath}\"
+
+ffmpeg -rtsp_transport tcp -i "rtsp://172.19.128.5:9090/playback?cameraid=1000279$1$0$1&begintime=1747987777&endtime=1747987788&type=2&substream=0&recordtype=1" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -movflags +frag_keyframe+empty_moov+faststart -f mp4 -y output1.mp4
