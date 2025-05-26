@@ -29,6 +29,10 @@ ffmpeg -rtsp_transport tcp -stimeout 10000000 -i "rtsp://admin:User@123@10.128.3
 -c:v libx264 -preset ultrafast -tune zerolatency ^
 -movflags +frag_keyframe+empty_moov -f mp4 -y output.mp4
 
+$ffmpegCommand = ".\ffmpeg1 -rtsp_transport tcp -i `"$InputPath`" -c:v libx264 -preset ultrafast -tune zerolatency -movflags +frag_keyframe+empty_moov -f mp4 -y `"$OutputPath`""
+
+
+
 ffmpeg -rtsp_transport tcp -i "rtsp://admin:User@123@10.128.3.1:554/cam/playback?channel=1&starttime=20240521T080000Z&endtime=20240521T083000Z" ^
 -c:v libx264 -preset ultrafast -tune zerolatency ^
 -movflags +frag_keyframe+empty_moov -f mp4 -y output.mp4
@@ -40,3 +44,5 @@ ffprobe -rtsp_transport tcp -count_frames -select_streams v:0 -show_entries stre
 [25-05-26 10:12:56.559 INF] [ERR] frame=  139 fps= 12 q=20.0 size=       0KiB time=00:00:09.26 bitrate=   0.0kbits/s dup=0 drop=3 speed=0.782x 
 
 ffmpeg -i input -c:v libx264 -preset fast -crf 23 -tag:v avc1 -c:a aac -b:a 128k -movflags +faststart output.mp4
+
+-rtsp_transport tcp -i \"{rtspUrl}\" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -t {duration.Value.TotalSeconds} -movflags +frag_keyframe+empty_moov+faststart -f mp4 -y "\"{outputPath}\"
