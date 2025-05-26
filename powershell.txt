@@ -32,3 +32,13 @@ Invoke-Expression $ffprobe
 
 
 ffprobe -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 -rtsp_transport tcp -i "rtsp://admin:User@123@10.128.3.1:554/Streaming/Channels/102"
+
+-------------------
+
+$ffmpeg = "C:\ffmpeg\bin\ffmpeg.exe"
+$rtspUrl = "rtsp://admin:admin123@192.168.1.100:554/cam/playback?channel=1&starttime=20240526T100000Z"
+$outputImage = "snapshot.jpg"
+$seek = "00:00:10"
+
+& $ffmpeg -rtsp_transport tcp -ss $seek -i $rtspUrl -frames:v 1 -q:v 2 $outputImage
+Write-Host "Frame grabbed at $seek into playback."
