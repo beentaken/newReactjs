@@ -34,3 +34,6 @@ ffmpeg -rtsp_transport tcp -i "rtsp://admin:User@123@10.128.3.1:554/cam/playback
 -movflags +frag_keyframe+empty_moov -f mp4 -y output.mp4
 
 0:00:10.000000 convert to timesanp
+
+ffprobe -rtsp_transport tcp -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -print_format json rtsp://user:pass@ip:port/stream
+
