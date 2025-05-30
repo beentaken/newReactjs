@@ -65,4 +65,16 @@ ffmpeg -i input -c:v libx264 -preset fast -crf 23 -tag:v avc1 -c:a aac -b:a 128k
 
 ffmpeg -rtsp_transport tcp -i "rtsp://172.19.128.5:9090/playback?cameraid=1000279$1$0$1&begintime=1747987777&endtime=1747987788&type=2&substream=0&recordtype=1" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -movflags +frag_keyframe+empty_moov -f mp4 -y output1.mp4
 
+string arguments = $"-rtsp_transport tcp -rtsp_flags prefer_tcp -fflags +genpts -i \"{rtspUrl}\" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -movflags +frag_keyframe+empty_moov+default_base_moof -f mp4 -flush_packets 1 -y \"{outputPath}\"";
+
+-rtsp_transport tcp -rtsp_flags prefer_tcp -fflags +genpts -i "rtsp://10.0.31.251:9090/playback?cameraid=1000008$1$0$57&begintime=1748424451&endtime=1748424467&type=2&substream=0&recordtype=1" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -movflags +frag_keyframe+empty_moov+default_base_moof -f mp4 -flush_packets 1 -y "a.mp4"
+
+string arguments = $"-rtsp_transport tcp -rtsp_flags prefer_tcp -fflags +genpts -i \"{rtspUrl}\" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -f hls -hls_time 2 -hls_list_size 10 -hls_flags delete_segments \"{outputPath.Replace(".mp4", ".m3u8")}\"";
+
+-rtsp_transport tcp -rtsp_flags prefer_tcp -fflags +genpts -i "rtsp://10.0.31.251:9090/playback?cameraid=1000008$1$0$57&begintime=1748424451&endtime=1748424467&type=2&substream=0&recordtype=1" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -f hls -hls_time 2 -hls_list_size 10 -hls_flags delete_segments "b.mp4"
+
+string arguments = $"-rtsp_transport tcp -rtsp_flags prefer_tcp -fflags +genpts -i \"{rtspUrl}\" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -movflags +frag_keyframe+empty_moov+default_base_moof -frag_duration 1000000 -f mp4 -flush_packets 1 -y \"{rtspUrl}\"";
+
+-rtsp_transport tcp -rtsp_flags prefer_tcp -fflags +genpts -i "rtsp://10.0.31.251:9090/playback?cameraid=1000008$1$0$57&begintime=1748424451&endtime=1748424467&type=2&substream=0&recordtype=1" -c:v libx264 -preset ultrafast -tune zerolatency -crf 30 -g 50 -pix_fmt yuv420p -an -movflags +frag_keyframe+empty_moov+default_base_moof -frag_duration 1000000 -f mp4 -flush_packets 1 -y "c.mp4"
+
 
