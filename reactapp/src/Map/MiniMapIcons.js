@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 // Material-UI
 import {
-    Box, Button, FormControl, InputLabel,
+    Box, Button, FormControl, InputLabel,TextField,
     MenuItem, Paper, Select, Typography
 } from "@mui/material";
 
@@ -35,9 +35,11 @@ const MiniMapIcons = () => {
     const [popupContent, setPopupContent] = useState("");
     const [doorColor, setDoorColor] = useState("blue");
     const [dragCoord, setDragCoord] = useState(null);
+    const [coordx, setCoordX] = useState("");
+    const [coordy, setCoordY] = useState("");
 
     const WordfeatureIcon = new Feature({
-        geometry: new Point([800, 600]),
+        geometry: new Point([coordx, setCoordY]),
 
         label: "Door Icons", // example custom property
     });
@@ -290,6 +292,20 @@ const MiniMapIcons = () => {
     return (
         <div>
             <Box sx={{ zIndex: 1000, display: "flex", gap: 2, padding: 2 }}>
+                    <TextField
+                        label="Enter something"
+                        variant="outlined"
+                    value={setCoordX}
+                    onChange={(e) => setCoordX(e.target.value)}
+                    />
+                <div>You typed: {coordx}</div>
+                    <TextField
+                        label="Enter something"
+                        variant="outlined"
+                    value={setCoordY}
+                    onChange={(e) => setCoordY(e.target.value)}
+                    />
+                <div>You typed: {coordy}</div>
                 <FormControl size="small" sx={{ minWidth: 150 }}>
                     <InputLabel>Select Feature</InputLabel>
                     <Select value={selectedFeature} onChange={(e) => setSelectedFeature(e.target.value)}>
@@ -335,7 +351,7 @@ const MiniMapIcons = () => {
                     Toggle Door Color
                 </Button>
                 <img src="http://localhost:7048/Image/get-randomicons" alt="My Image" />
-                {dragCoord}
+                {JSON.stringify(dragCoord)}
             </Box>
             <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />
 
