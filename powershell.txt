@@ -1,0 +1,44 @@
+# Define the input and output file paths
+$InputPath = "rtsp://172.19.128.5:9090/playback?cameraid=1000273%241%240%243%240&type=2&begintime=1742213808&endtime=1742213908&substream=0&recordType=1"
+$OutputPath = "output.mp4"
+
+# Construct the FFmpeg command
+
+$ffmpegCommand = ".\ffmpeg1 -rtsp_transport tcp -i `"$InputPath`" -c:v libx264 -preset ultrafast -tune zerolatency -movflags +frag_keyframe+empty_moov -f mp4 -y `"$OutputPath`""
+
+
+
+# Execute the command
+Invoke-Expression $ffmpegCommand
+
+
+
+# Define the input and output file paths
+$InputPath = "rtsp://172.19.128.5:9090/playback?cameraid=1000273%241%240%243%240&type=2&begintime=1742213808&endtime=1742213908&substream=0&recordType=1"
+$OutputPath = "output.mp4"
+
+# Duration in HH:MM:SS.MILLISECONDS format
+$Duration = "00:01:40.04"
+
+# Construct the FFmpeg command with the duration
+$ffmpegCommand = ".\ffmpeg1 -rtsp_transport tcp -i `"$InputPath`" -c:v libx264 -preset ultrafast -tune zerolatency -movflags +frag_keyframe+empty_moov -t $Duration -f mp4 -y `"$OutputPath`""
+
+$ffprobe = ".\ffprobe -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 -rtsp_transport tcp -i `"$InputPath`""
+
+
+# Execute the command
+Invoke-Expression $ffmpegCommand
+Invoke-Expression $ffprobe
+
+
+ffprobe -v error -show_entries format=duration -sexagesimal -of default=noprint_wrappers=1:nokey=1 -rtsp_transport tcp -i "rtsp://admin:User@123@10.128.3.1:554/Streaming/Channels/102"
+
+-------------------
+
+$ffmpeg = "C:\ffmpeg\bin\ffmpeg.exe"
+$rtspUrl = "rtsp://admin:admin123@192.168.1.100:554/cam/playback?channel=1&starttime=20240526T100000Z"
+$outputImage = "snapshot.jpg"
+$seek = "00:00:10"
+
+& $ffmpeg -rtsp_transport tcp -ss $seek -i $rtspUrl -frames:v 1 -q:v 2 $outputImage
+Write-Host "Frame grabbed at $seek into playback."
