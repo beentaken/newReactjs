@@ -1,5 +1,5 @@
-# Use Node.js 16 Alpine base image
-FROM node:16-alpine
+# Use Node.js 18 Alpine base image
+FROM node:18-alpine
 
 # Install prerequisites for .NET SDK and native modules
 RUN apk add --no-cache \
@@ -30,7 +30,7 @@ WORKDIR /app
 # Copy and install Node.js dependencies
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps
-RUN npm install --production
+
 # Copy the rest of the application
 COPY . .
 

@@ -7,13 +7,14 @@
 /package.json
 /reactapp/reactapp.esproj
 
-/webapi/bin/Debug/net8.0
+
 /reactapp/node_modules/@emotion
 /yml
 /reactapp/obj/Debug/reactapp.esproj.FileListAbsolute.txt
 # Ignore folder
-/reactapp/node_modules/
-/webapi/obj/
-/reactapp/obj/
-/reactapp/.vs/
-/reactapp/node_modules/.cache/default-development/3.pack
+/reactapp/node_modules
+/webapi/obj
+/reactapp/obj
+/reactapp/.vs
+/webapi/bin/Debug
+
