@@ -17,4 +17,4 @@
 /reactapp/obj
 /reactapp/.vs
 /webapi/bin/Debug
-
+/reactapp/node_modules/
