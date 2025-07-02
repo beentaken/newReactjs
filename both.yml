@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "7048:7048"
-    working_dir: /webapi
-    command: ["dotnet", "webapi.dll"]
 
   webapp:
     build:
@@ -18,5 +16,3 @@ services:
       - "80:80"
     environment:
       - PORT=80
-    working_dir: /reactapp
-    command: ["sh", "-c", "PORT=80 npm run start"]
