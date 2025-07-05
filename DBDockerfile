@@ -1,0 +1,17 @@
+FROM mysql:8.0
+
+# Set environment variables
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+ENV MYSQL_DATABASE=myapp
+ENV MYSQL_USER=appuser
+ENV MYSQL_PASSWORD=apppassword
+
+# Copy custom configuration if needed
+# COPY my.cnf /etc/mysql/conf.d/
+
+
+# Expose MySQL port
+EXPOSE 3306
+
+# The base image already has the correct CMD, but you can override if needed
+# CMD ["mysqld"]
