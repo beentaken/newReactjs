@@ -17,49 +17,55 @@ services:
     environment:
       - PORT=80
   mysql:
-    build:
-      context: .
-      dockerfile: DBDockerfile
-    # Alternative: use official image directly
-    # image: mysql:8.0
-    container_name: mysql_container
-    restart: unless-stopped
+    image: mysql:8.0
+    container_name: keycloak-mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: myapp
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppassword
-    ports:
-      - "3306:3306"
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: keycloakpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
-      - mysql_network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 10s
-      retries: 5
-      interval: 30s
+      - keycloak-net
 
-  # Optional: phpMyAdmin for database management
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_container
-    restart: unless-stopped
+    container_name: keycloak-phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
     environment:
       PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: appuser
-      PMA_PASSWORD: apppassword
-    ports:
-      - "8080:80"
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
     depends_on:
       - mysql
     networks:
-      - mysql_network
+      - keycloak-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    container_name: keycloak
+    command: start-dev
+    restart: always
+    environment:
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloakpassword
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - keycloak-net
 
 volumes:
   mysql_data:
-    driver: local
 
 networks:
-  mysql_network:
-    driver: bridge
+  keycloak-net:
