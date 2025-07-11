@@ -15,8 +15,8 @@ namespace webapi.Model
         // Constructor initializes random values for X, Y, and Status
         public Minimap()
         {
-            X = random.Next(0, 100);
-            Y = random.Next(0, 100);
+            X = random.Next(0, 250);
+            Y = random.Next(0, 250);
             Status = random.Next(1, 3);  // Assuming Status can be either 1 or 2
             Summary = "Generated Location";  // Assign a default summary or change it based on your needs
         }

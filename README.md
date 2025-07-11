@@ -5,7 +5,7 @@ docker compose -f both.yml up -d
 docker system prune --volumes
 
 
-
+12ab
 # Solution2
 
 
@@ -21,6 +21,5 @@ npm install react-beautiful-dnd --legacy-peer-deps
 npm install --legacy-peer-deps
 
 docker compose -f docker-compose.yml up -d
-
 
 

@@ -9,66 +9,96 @@ import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { Feature } from "ol";
 import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
+import { createCircleFeature } from '../Function/Featurecreation'; // adjust path
 
-// Import image from assets (if in src/assets/)
-import doorBlue from "../Images/door-blue.png"; // Ensure correct path
+// Image asset
+import doorBlue from "../Images/door-blue.png";
+
+const fetchAllRandomCoordinates = async () => {
+    try {
+        const response = await fetch('https://localhost:44317/api/Minimap/GetCoordinates');
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch coordinates:", error);
+        return null;
+    }
+};
 
 const OpenLayersImageMap = () => {
     const mapRef = useRef(null);
 
     useEffect(() => {
-        const center = fromLonLat([0, 0]);
+        let map; // Declare here so we can clean up later
 
-        // Icon feature
-        const featureIcon = new Feature({
-            geometry: new Point(fromLonLat([0, 0])), // Corrected longitude
-        });
+        const initMap = async () => {
+            const coordinates = await fetchAllRandomCoordinates();
+            console.log("Fetched Coordinates:", coordinates);
 
-        // Corrected image path
-        const iconStyle = new Style({
-            image: new Icon({
-                src: doorBlue, // Path to your image
-                scale: 0.1, // Adjust scale as needed
-                anchor: [0.5, 1],
-            }),
-        });
+            const center = fromLonLat([0, 0]);
 
-        // Circle feature
-        const featurePoint = new Feature({
-            geometry: new Point(fromLonLat([5, 5])),
-        });
+            const features = [];
 
-        const pointStyle = new Style({
-            image: new Circle({
-                radius: 6,
-                fill: new Fill({ color: "red" }),
-                stroke: new Stroke({ color: "white", width: 2 }),
-            }),
-        });
+            // Add icon feature
+            const featureIcon = new Feature({
+                geometry: new Point(fromLonLat([0, 0])),
+            });
 
-        featureIcon.setStyle(iconStyle);
-        featurePoint.setStyle(pointStyle);
+            featureIcon.setStyle(new Style({
+                image: new Icon({
+                    src: doorBlue,
+                    scale: 0.1,
+                    anchor: [0.5, 1],
+                }),
+            }));
 
-        const vectorLayer = new VectorLayer({
-            source: new VectorSource({
-                features: [featureIcon, featurePoint],
-            }),
-        });
+            features.push(featureIcon);
 
-        const map = new Map({
-            target: mapRef.current,
-            layers: [
-                new TileLayer({ source: new OSM() }),
-                vectorLayer,
-            ],
-            view: new View({
-                projection: "EPSG:3857",
-                center: center,
-                zoom: 2,
-            }),
-        });
+            // Add circle point
+            const featurePoint = new Feature({
+                geometry: new Point(fromLonLat([5, 5])),
+            });
 
-        return () => map.setTarget(undefined);
+            featurePoint.setStyle(new Style({
+                image: new Circle({
+                    radius: 6,
+                    fill: new Fill({ color: "red" }),
+                    stroke: new Stroke({ color: "white", width: 2 }),
+                }),
+            }));
+
+            features.push(featurePoint);
+
+            coordinates.forEach((item, index) => {
+
+                features.push(createCircleFeature([item.x, item.y], item.status));
+            });
+       
+    
+            const vectorLayer = new VectorLayer({
+                source: new VectorSource({ features }),
+            });
+
+            map = new Map({
+                target: mapRef.current,
+                layers: [
+                    new TileLayer({ source: new OSM() }),
+                    vectorLayer,
+                ],
+                view: new View({
+                    projection: "EPSG:3857",
+                    center,
+                    zoom: 2,
+                }),
+            });
+        };
+
+        initMap();
+
+        return () => {
+            if (map) map.setTarget(undefined);
+        };
     }, []);
 
     return <div ref={mapRef} style={{ width: "100%", height: "100vh" }} />;

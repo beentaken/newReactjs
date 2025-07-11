@@ -12,7 +12,7 @@ const DragDrop = () => {
 
         const mainComponentRect = mainComponentRef.current.getBoundingClientRect();
         const newBox = {
-            id: Date.now(),
+            id: crypto.randomUUID(),  //id: Date.now(),
             x: event.clientX - mainComponentRect.left - BOX_SIZE / 2,
             y: event.clientY - mainComponentRect.top - BOX_SIZE / 2,
             offsetX: 0,
