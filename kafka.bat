@@ -1,0 +1,1 @@
+cmd /k docker compose -f kafka.yml up -d

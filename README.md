@@ -1,8 +1,12 @@
 docker compose -f both.yml up -d
 
+
+docker compose -f kafka.yml up -d
+
+
 docker system prune --volumes
-
-
+docker network prune
+docker system prune -a --volumes -f
 
 12ab
 
