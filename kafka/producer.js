@@ -1,23 +1,23 @@
-const { Kafka } = require('kafkajs')
+const { Kafka, logLevel } = require('kafkajs');
 
 const kafka = new Kafka({
+ // logLevel: logLevel.DEBUG, // Enable DEBUG logging
   clientId: 'my-app',
-  brokers: ['localhost:9092']
-})
+  brokers: ['localhost:29092'] // correct for external host
+});
 
-const producer = kafka.producer()
+const producer = kafka.producer();
 
 const run = async () => {
-  await producer.connect()
+  await producer.connect();
   await producer.send({
     topic: 'test-topic',
     messages: [
-      { value: 'Hello KafkaJS!' },
+      { key: "1", value: 'Hello KafkaJS!' },
     ],
-  })
+  });
+  console.log("Message sent");
+  await producer.disconnect();
+};
 
-  console.log("Message sent")
-  await producer.disconnect()
-}
-
-run().catch(console.error)
+run().catch(console.error);

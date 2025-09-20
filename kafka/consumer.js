@@ -1,6 +1,7 @@
 const { Kafka } = require('kafkajs')
 
 const kafka = new Kafka({
+  logLevel: logLevel.DEBUG, // Enable DEBUG logging
   clientId: 'my-app',
   brokers: ['localhost:9092']
 })
