@@ -1,9 +1,9 @@
-const { Kafka } = require('kafkajs')
+const { Kafka, logLevel } = require('kafkajs');
 
 const kafka = new Kafka({
   logLevel: logLevel.DEBUG, // Enable DEBUG logging
   clientId: 'my-app',
-  brokers: ['localhost:9092']
+  brokers: ['localhost:29092'] // correct for external host
 })
 
 const consumer = kafka.consumer({ groupId: 'test-group' })
