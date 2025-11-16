@@ -44,3 +44,6 @@ docker system prune -a --volumes
 
 
 
+
+choco install openssl.light -y
+choco uninstall openssl.light -y
