@@ -25,7 +25,7 @@ async function setupKeycloak() {
         console.log(`Realm '${realmName}' created`);
     } catch (err) {
         if (err.response && err.response.status === 409) {
-            console.log(`⚠️ Realm '${realmName}' already exists`);
+            console.log(`Realm '${realmName}' already exists`);
         } else throw err;
     }
 
@@ -33,7 +33,7 @@ async function setupKeycloak() {
     kcAdminClient.setConfig({ realmName });
 
     // 3️⃣ Create Client
-    const clientId = 'testc';
+    const clientId = 'DemoRealm';
     let client;
     try {
         client = await kcAdminClient.clients.create({
