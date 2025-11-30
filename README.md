@@ -42,8 +42,11 @@ docker image prune -a
 
 docker system prune -a --volumes
 
-
-
-
 choco install openssl.light -y
 choco uninstall openssl.light -y
+
+powershell
+New-Item -ItemType Directory -Path "$env:APPDATA\ASP.NET\https" -Force
+C:\Users\hanwu\AppData\Roaming\ASP.NET\https
+dotnet dev-certs https -t
+dotnet dev-certs https --clean
