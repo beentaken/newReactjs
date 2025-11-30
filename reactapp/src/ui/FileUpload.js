@@ -87,7 +87,7 @@ const FileUpload = () => {
             const obj = {};
             const currentLine = lines[i].split(",");
 
-            headers.forEach((header, index) => {
+            headers?.forEach((header, index) => {
                 obj[header.trim()] = currentLine[index] ? currentLine[index].trim() : "";
             });
 

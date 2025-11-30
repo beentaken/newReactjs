@@ -160,7 +160,7 @@ const MiniMap = () => {
         newMap.addOverlay(popupOverlay);
 
         newMap.on("click", (event) => {
-            const feature = newMap.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+            const feature = newMap?.forEachFeatureAtPixel(event.pixel, (feat) => feat);
             if (feature) {
                 setPopupContent(feature.get("name"));
                 popupOverlay.setPosition(event.coordinate);

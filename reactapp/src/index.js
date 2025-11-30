@@ -4,8 +4,8 @@ import App from './App';
 
 // Use the ReactDOM.render method
 ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-    document.getElementById('root') // Specify the container
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root') // Specify the container
 );

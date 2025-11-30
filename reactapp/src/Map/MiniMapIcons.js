@@ -191,7 +191,7 @@ const MiniMapIcons = () => {
         newMap.addOverlay(popupOverlay);
 
         newMap.on("click", (event) => {
-            const feature = newMap.forEachFeatureAtPixel(event.pixel, (feat) => feat);
+            const feature = newMap?.forEachFeatureAtPixel(event.pixel, (feat) => feat);
             if (feature) {
                 setPopupContent(feature.get("name"));
                 popupOverlay.setPosition(event.coordinate);
@@ -245,7 +245,7 @@ const MiniMapIcons = () => {
 
     const AddFeatures = () => {
         // Log existing features
-        vectorSource.getFeatures().forEach((feature, index) => {
+        vectorSource.getFeatures()?.forEach((feature, index) => {
             console.log(`Before - Feature ${index}:`);
             console.log('  ID:', feature.getId());
             console.log('  Geometry:', feature.getGeometry());
@@ -281,7 +281,7 @@ const MiniMapIcons = () => {
         
 
         // Log features again
-        vectorSource.getFeatures().forEach((feature, index) => {
+        vectorSource.getFeatures()?.forEach((feature, index) => {
             console.log(`After - Feature ${index}:`);
             console.log('  ID:', feature.getId());
             console.log('  Geometry:', feature.getGeometry());

@@ -70,7 +70,7 @@ const OpenLayersImageMap = () => {
 
             features.push(featurePoint);
 
-            coordinates.forEach((item, index) => {
+            coordinates?.forEach((item, index) => {
 
                 features.push(createCircleFeature([item.x, item.y], item.status));
             });

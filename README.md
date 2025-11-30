@@ -15,6 +15,9 @@ docker system prune -a --volumes -f
 
 
 cd reactapp
+npm install --legacy-peer-deps
+
+
 npm install react-router-dom
 npm install @mui/material
 npm install @emotion/react @emotion/styled
@@ -23,7 +26,8 @@ npm install @mui/material @emotion/react @emotion/styled @mui/styles
 npm install @material-ui/icons
 npm install xlsx
 npm install react-beautiful-dnd --legacy-peer-deps
-npm install --legacy-peer-deps
+
+
 
 npm -g install kafkajs
 npm -g i @keycloak/keycloak-admin-client
@@ -42,11 +46,14 @@ docker image prune -a
 
 docker system prune -a --volumes
 
+
+
+
 choco install openssl.light -y
 choco uninstall openssl.light -y
 
 powershell
 New-Item -ItemType Directory -Path "$env:APPDATA\ASP.NET\https" -Force
-C:\Users\hanwu\AppData\Roaming\ASP.NET\https
 dotnet dev-certs https -t
 dotnet dev-certs https --clean
+copy  the cert in "C:\Users\hanwu\AppData\Roaming\ASP.NET\https" into https folder of react app
