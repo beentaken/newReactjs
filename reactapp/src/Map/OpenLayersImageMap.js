@@ -38,18 +38,6 @@ const fetchArchive64 = async () => {
     }
 };
 
-const fetchArchiveBlob = async () => {
-    try {
-        const response = await fetch('https://localhost:44317/Archive/GetArchiveBlob');
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Failed to fetch archive:", error);
-        return null;
-    }
-};
-
 const OpenLayersImageMap = () => {
     const mapRef = useRef(null);
     const [fileinfo, setFileinfo] = useState(null);
@@ -95,7 +83,7 @@ const OpenLayersImageMap = () => {
 
         try {
             // Split the base64 string into metadata and data parts
-            const base64 = fileinfo.base64;
+            const base64 = fileinfo.bytes;
 
             const bstr = atob(base64); // Decode Base64 to binary string
             let n = bstr.length;
@@ -131,7 +119,7 @@ const OpenLayersImageMap = () => {
             const coordinates = await fetchAllRandomCoordinates();
             console.log("Fetched Coordinates:", coordinates);
             const archive64 = await fetchArchive64();
-            const archiveblob = await downloadbaseBlob();
+
 
             setFileinfo(archive64);
             const center = fromLonLat([0, 0]);
