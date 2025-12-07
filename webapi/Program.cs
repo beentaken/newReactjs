@@ -1,24 +1,21 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Runtime.ConstrainedExecution;
 
-// Create builder
 var builder = WebApplication.CreateBuilder(args);
-
-// Load custom appsettings.json
 var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
 builder.Configuration.AddJsonFile(configPath, optional: false, reloadOnChange: true);
+// Add services to the container.
 
-// Add services
 builder.Services.AddControllers();
-
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.OperationFilter<AddCustomHeaderOperationFilter>();
-
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme.",
+        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
@@ -26,42 +23,46 @@ builder.Services.AddSwaggerGen(c =>
         BearerFormat = "JWT"
     });
 
+    // Require JWT bearer authentication for all API endpoints
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] { }
+            }
+        });
+
+
 });
 
-// CORS
+// Add CORS policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("https://localhost:3000", "http://localhost:3000")
+        policy.WithOrigins("https://localhost:3000", "http://localhost:3000") // Allow React App
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
+//////
+
 
 var app = builder.Build();
 
-// --- Middleware order is important ---
-
+// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment()) // if only for dev
+//{
 app.UseDeveloperExceptionPage();
-
 app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
+app.UseSwaggerUI(c => {
     c.DefaultModelRendering(ModelRendering.Example);
     c.DefaultModelsExpandDepth(-1);
     c.DisplayRequestDuration();
@@ -69,21 +70,40 @@ app.UseSwaggerUI(c =>
     c.EnableFilter();
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 });
+//}
+//else
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    // Disable HTTPS redirection
+//    // app.UseHttpsRedirection();
+//}
 
-// Enable WebSockets BEFORE routing
-app.UseWebSockets(new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromSeconds(20)
-});
-
-app.UseRouting();
-
-app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
-app.UseAuthorization();
+
 
 //app.UseHttpsRedirection(); // if got https
+
+
+
+app.UseAuthorization();
+// Use CORS policy
+app.UseCors("AllowReactApp");
 app.MapControllers();
 
 app.Run();
+
+app.UseRouting();
+
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(20)
+};
+
+app.UseWebSockets(webSocketOptions);
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
