@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; //17
 import ReactDOM from 'react-dom'; 
 import App from './App';
 
@@ -12,7 +12,7 @@ ReactDOM.render(
 
 
 
-// src/index.js (or main entry file)
+// src/index.js (or main entry file) //18
 //import { createRoot } from 'react-dom/client';
 //import App from './App';
 

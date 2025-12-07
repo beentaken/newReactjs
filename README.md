@@ -54,6 +54,9 @@ choco uninstall openssl.light -y
 
 powershell
 New-Item -ItemType Directory -Path "$env:APPDATA\ASP.NET\https" -Force
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+openssl pkcs12 -export -out myapp.pfx -inkey key.pem -in cert.pem -password pass:password123
+
 dotnet dev-certs https -t
 dotnet dev-certs https --clean
-copy  the cert in "C:\Users\hanwu\AppData\Roaming\ASP.NET\https" into https folder of react app
+copy  the cert in "C:\Users\xxxx\AppData\Roaming\ASP.NET\https" into https folder of react app

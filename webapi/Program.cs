@@ -1,20 +1,24 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Runtime.ConstrainedExecution;
 
+// Create builder
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Load custom appsettings.json
+var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+builder.Configuration.AddJsonFile(configPath, optional: false, reloadOnChange: true);
 
+// Add services
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.OperationFilter<AddCustomHeaderOperationFilter>();
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
+        Description = "JWT Authorization header using the Bearer scheme.",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
@@ -22,87 +26,64 @@ builder.Services.AddSwaggerGen(c =>
         BearerFormat = "JWT"
     });
 
-    // Require JWT bearer authentication for all API endpoints
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
+            new OpenApiSecurityScheme
             {
-                new OpenApiSecurityScheme
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[] { }
-            }
-        });
-
-
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
-// Add CORS policy
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("https://localhost:3000", "http://localhost:3000") // Allow React App
+        policy.WithOrigins("https://localhost:3000", "http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
-//////
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment()) // if only for dev
-//{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => {
-        c.DefaultModelRendering(ModelRendering.Example);
-        c.DefaultModelsExpandDepth(-1);
-        c.DisplayRequestDuration();
-        c.EnableDeepLinking();
-        c.EnableFilter();
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    });
-//}
-//else
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//    // Disable HTTPS redirection
-//    // app.UseHttpsRedirection();
-//}
+// --- Middleware order is important ---
 
+app.UseDeveloperExceptionPage();
 
-app.UseAuthentication();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.DefaultModelRendering(ModelRendering.Example);
+    c.DefaultModelsExpandDepth(-1);
+    c.DisplayRequestDuration();
+    c.EnableDeepLinking();
+    c.EnableFilter();
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+});
 
-
-//app.UseHttpsRedirection(); // if got https
-
-
-
-app.UseAuthorization();
-// Use CORS policy
-app.UseCors("AllowReactApp");
-app.MapControllers();
-
-app.Run();
+// Enable WebSockets BEFORE routing
+app.UseWebSockets(new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(20)
+});
 
 app.UseRouting();
 
-var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromSeconds(20)
-};
+app.UseCors("AllowReactApp");
 
-app.UseWebSockets(webSocketOptions);
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+app.UseAuthentication();
+app.UseAuthorization();
+
+//app.UseHttpsRedirection(); // if got https
+app.MapControllers();
+
+app.Run();
