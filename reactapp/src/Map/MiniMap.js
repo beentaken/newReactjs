@@ -11,7 +11,10 @@ import { Style, Icon, Circle, Fill, Stroke } from "ol/style";
 import Translate from "ol/interaction/Translate";
 
 // Material-UI
-import { FormControl, InputLabel, MenuItem, Select, Button, Box, Paper, Typography } from "@mui/material";
+import {
+    FormControl, InputLabel, MenuItem,
+    Select, Button, Box, Paper, Typography
+} from "@mui/material";
 
 // Images
 import doorBlue from "../Images/door-blue.png";
