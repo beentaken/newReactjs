@@ -93,16 +93,33 @@ const OpenLayersImageMap = () => {
         if (!selectedFeature) return;
 
         setLoading(l => ({ ...l, blob: true }));
+
         try {
             const { blob, headers } = await fetchBlob(
                 `${API}/Archive/GetArchiveFile?filename=${encodeURIComponent(selectedFeature)}`
-            ); 
-            setBlobFile(blob);
-            setHeaders(headers);
+            );
+
+            // Extract filename from header
+            let fileName = selectedFeature;
+            const cd = headers?.get("Content-Disposition");
+            if (cd) {
+                const match = cd.match(/filename\\*=UTF-8''([^;]+)|filename="?([^"]+)"?/);
+                if (match) fileName = decodeURIComponent(match[1] || match[2]);
+            }
+
+            // ⬇️ DOWNLOAD
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+
         } catch (e) {
             console.error(e);
+        } finally {
+            setLoading(l => ({ ...l, blob: false }));
         }
-        setLoading(l => ({ ...l, blob: false }));
     };
 
     // ================= MAP INIT =================
