@@ -136,7 +136,7 @@ namespace webapi.Controllers
                 return BadRequest($"Archive directory does not exist: {fullPath}");
 
             // File you want to load
-            var filePath = Path.Combine(fullPath, cfileName);
+            var filePath = Path.Combine(fullPath, filename);
 
             var bytes = System.IO.File.ReadAllBytes(filePath);
 
@@ -147,7 +147,7 @@ namespace webapi.Controllers
             if (ext == ".jpg" || ext == ".jpeg") mimeType = "image/jpeg";
             if (ext == ".png") mimeType = "image/png";
 
-            return File(bytes, mimeType, cfileName);
+            return File(bytes, mimeType, filename);
 
         }
     }
