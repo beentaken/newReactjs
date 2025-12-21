@@ -1,30 +1,27 @@
 // src/sitemap/Sidebar.js
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Sidebar.css'; // Add styles for the sidebar
+import React from "react";
+import { NavLink } from "react-router-dom";
+import "./Sidebar.css";
 
 function Sidebar({ pages }) {
     return (
-             <ul>
-                {pages.map((page, index) => (
-                    <li key={index}>
-                        <Link to={page.path}>{page.title}</Link>
+        <aside className="sidebar">
+            <h2 className="sidebar-title">Menu</h2>
+            <ul className="sidebar-list">
+                {pages.map((page) => (
+                    <li key={page.path}>
+                        <NavLink
+                            to={page.path}
+                            className={({ isActive }) =>
+                                isActive ? "sidebar-link active" : "sidebar-link"
+                            }
+                        >
+                            {page.title}
+                        </NavLink>
                     </li>
                 ))}
             </ul>
-        //<div className="sidebar">
-        //    <nav>
-        //        <ul>
-        //            {pages.map((page, index) => (
-        //                <li key={index}>
-        //                    <Link to={page.path}>{page.title}</Link>
-        //                </li>
-        //            ))}
-
-        //        </ul>
-        //    </nav>
-       
-        //</div>
+        </aside>
     );
 }
 
