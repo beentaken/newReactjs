@@ -5,7 +5,7 @@ function ImageViewer() {
 
     const base64 = async () => {
         try {
-            const response = await fetch(`http://localhost:7048/Image/get-image-base64`); // Include the id
+            const response = await fetch(`https://localhost:44317/Image/get-image-base64`); // Include the id
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
 
