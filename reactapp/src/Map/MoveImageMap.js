@@ -22,9 +22,6 @@ import {
     Alert
 } from "@mui/material";
 import { Modify, Select as OlSelect } from "ol/interaction";
-import { pointerMove } from "ol/events/condition";
-
-import doorBlue from "../Images/door-blue.png";
 
 // ================= API =================
 const API = "https://localhost:44317";
@@ -42,49 +39,15 @@ const fetchBlob = async (url) => {
     return { blob: await r.blob(), headers: r.headers };
 };
 
-// ================= CLUSTER STYLE =================
-const styleCache = {};
-
-const clusterStyle = (feature) => {
-    const size = feature.get("features").length;
-
-    if (!styleCache[size]) {
-        if (size === 1) {
-            // Single marker - make it larger for better dragging
-            styleCache[size] = new Style({
-                image: new Icon({
-                    src: doorBlue,
-                    scale: 0.12, // Slightly larger for better dragging
-                    anchor: [0.5, 1],
-                    crossOrigin: "anonymous"
-                })
-            });
-        } else {
-            // Cluster marker
-            styleCache[size] = new Style({
-                image: new Circle({
-                    radius: 15,
-                    fill: new Fill({ color: "#1976d2" }),
-                    stroke: new Stroke({ color: "#ffffff", width: 2 })
-                }),
-                text: new Text({
-                    text: size.toString(),
-                    fill: new Fill({ color: "#ffffff" }),
-                    stroke: new Stroke({ color: "#000000", width: 2 })
-                })
-            });
-        }
-    }
-    return styleCache[size];
-};
-
 // ================= COMPONENT =================
-const OpenLayersImageMap = () => {
+const MoveImageMap = () => {
     const mapRef = useRef(null);
     const mapInstance = useRef(null);
     const vectorSourceRef = useRef(null);
     const modifyInteractionRef = useRef(null);
     const selectInteractionRef = useRef(null);
+    const directVectorLayerRef = useRef(null);
+    const clusterLayerRef = useRef(null);
 
     const [featureOptions, setFeatureOptions] = useState([]);
     const [selectedFeature, setSelectedFeature] = useState("");
@@ -96,7 +59,7 @@ const OpenLayersImageMap = () => {
     const [loading, setLoading] = useState({ base64: false, blob: false });
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
     const [editMode, setEditMode] = useState(false);
-    const [movedFeatures, setMovedFeatures] = useState([]); // Track moved features
+    const [movedFeatures, setMovedFeatures] = useState([]);
 
     // ================= DOWNLOAD HELPERS =================
     const downloadBlob = useCallback((blob, filename) => {
@@ -148,29 +111,99 @@ const OpenLayersImageMap = () => {
         }
     };
 
+    // ================= CLUSTER STYLE =================
+    const styleCache = useRef({});
+
+    const getClusterStyle = useCallback((feature, isEditMode = false) => {
+        const size = feature.get("features")?.length || 1;
+
+        // In edit mode, always show individual icons for easier dragging
+        if (isEditMode) {
+            return new Style({
+                image: new Icon({
+                    src: "https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png",
+                    scale: 0.5,
+                    anchor: [0.5, 1],
+                    crossOrigin: "anonymous"
+                })
+            });
+        }
+
+        // Regular cluster styling
+        if (size === 1) {
+            return new Style({
+                image: new Icon({
+                    src: "https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png",
+                    scale: 0.4,
+                    anchor: [0.5, 1],
+                    crossOrigin: "anonymous"
+                })
+            });
+        }
+
+        // Cluster styling
+        return new Style({
+            image: new Circle({
+                radius: 15 + Math.min(size, 10),
+                fill: new Fill({ color: `rgba(25, 118, 210, ${0.7 + Math.min(size / 20, 0.3)})` }),
+                stroke: new Stroke({ color: "#ffffff", width: 3 })
+            }),
+            text: new Text({
+                text: size.toString(),
+                fill: new Fill({ color: "#ffffff" }),
+                font: "bold 14px sans-serif",
+                stroke: new Stroke({ color: "#000000", width: 2 })
+            })
+        });
+    }, []);
+
     // ================= EDIT MODE FUNCTIONS =================
     const toggleEditMode = () => {
         const newEditMode = !editMode;
         setEditMode(newEditMode);
 
-        if (mapInstance.current) {
+        if (mapInstance.current && vectorSourceRef.current) {
             if (newEditMode) {
-                // Enable modify interaction
+                // ENTER EDIT MODE
+
+                // Remove cluster layer
+                if (clusterLayerRef.current) {
+                    mapInstance.current.removeLayer(clusterLayerRef.current);
+                    clusterLayerRef.current = null;
+                }
+
+                // Add direct vector layer for editing (shows individual icons)
+                directVectorLayerRef.current = new VectorLayer({
+                    source: vectorSourceRef.current,
+                    style: (feature) => {
+                        return new Style({
+                            image: new Icon({
+                                src: "https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png",
+                                scale: 0.5,
+                                anchor: [0.5, 1],
+                                crossOrigin: "anonymous"
+                            })
+                        });
+                    }
+                });
+                mapInstance.current.addLayer(directVectorLayerRef.current);
+
+                // Add modify interaction for dragging
                 if (!modifyInteractionRef.current) {
                     modifyInteractionRef.current = new Modify({
                         source: vectorSourceRef.current,
-                        // Only modify on drag (not on click)
-                        condition: pointerMove
+                        pixelTolerance: 15,
+                        wrapX: false
                     });
                 }
 
-                // Add select interaction to highlight selected features
+                // Add select interaction to highlight features
                 if (!selectInteractionRef.current) {
                     selectInteractionRef.current = new OlSelect({
                         style: new Style({
                             image: new Icon({
-                                src: doorBlue,
-                                scale: 0.15, // Larger when selected
+                                src: "https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/images/marker-icon.png",
+                                scale: 0.6,
                                 anchor: [0.5, 1],
                                 crossOrigin: "anonymous"
                             })
@@ -181,9 +214,30 @@ const OpenLayersImageMap = () => {
                 mapInstance.current.addInteraction(modifyInteractionRef.current);
                 mapInstance.current.addInteraction(selectInteractionRef.current);
 
-                showSnackbar("Edit mode enabled: Drag icons to move them", "info");
+                showSnackbar("Edit mode enabled. Drag icons to move them.", "info");
+
             } else {
-                // Disable modify interaction
+                // EXIT EDIT MODE
+
+                // Remove direct vector layer
+                if (directVectorLayerRef.current) {
+                    mapInstance.current.removeLayer(directVectorLayerRef.current);
+                    directVectorLayerRef.current = null;
+                }
+
+                // Restore cluster layer
+                const clusterSource = new Cluster({
+                    distance: 40,
+                    source: vectorSourceRef.current
+                });
+
+                clusterLayerRef.current = new VectorLayer({
+                    source: clusterSource,
+                    style: (feature) => getClusterStyle(feature, false)
+                });
+                mapInstance.current.addLayer(clusterLayerRef.current);
+
+                // Remove interactions
                 if (modifyInteractionRef.current) {
                     mapInstance.current.removeInteraction(modifyInteractionRef.current);
                 }
@@ -191,37 +245,40 @@ const OpenLayersImageMap = () => {
                     mapInstance.current.removeInteraction(selectInteractionRef.current);
                 }
 
-                // Show moved features coordinates
+                // Show moved features summary
                 if (movedFeatures.length > 0) {
-                    console.log("Moved features:", movedFeatures);
-                    showSnackbar(`Moved ${movedFeatures.length} features. Check console for coordinates.`, "success");
+                    console.log("Moved features coordinates:", movedFeatures);
+                    showSnackbar(`${movedFeatures.length} features moved. Check console for coordinates.`, "success");
 
-                    // Here you could send the updated coordinates to your API
+                    // Optional: Send to API
                     // updateCoordinates(movedFeatures);
+                } else {
+                    showSnackbar("Edit mode disabled", "info");
                 }
-
-                showSnackbar("Edit mode disabled", "info");
             }
         }
     };
 
-    // Function to update coordinates on server (optional)
+    // Function to update coordinates on server
     const updateCoordinates = async (features) => {
         try {
             const updates = features.map(f => ({
-                id: f.id, // You'll need to add IDs to your features
-                x: toLonLat(f.getGeometry().getCoordinates())[0],
-                y: toLonLat(f.getGeometry().getCoordinates())[1]
+                id: f.id,
+                x: f.x,
+                y: f.y
             }));
 
-            // Uncomment when you have an API endpoint
+            console.log("Sending updates to server:", updates);
+
+            // Uncomment when you have API endpoint
             // await fetch(`${API}/api/Minimap/UpdateCoordinates`, {
             //     method: 'POST',
             //     headers: { 'Content-Type': 'application/json' },
             //     body: JSON.stringify(updates)
             // });
 
-            showSnackbar("Coordinates updated successfully", "success");
+            showSnackbar("Coordinates updated on server", "success");
+            setMovedFeatures([]); // Clear after successful update
         } catch (error) {
             console.error("Failed to update coordinates:", error);
             showSnackbar("Failed to update coordinates", "error");
@@ -243,15 +300,16 @@ const OpenLayersImageMap = () => {
                 setBase64File(archive64);
                 setFeatureOptions(options);
 
-                // 🔹 Create features
+                // Create features
                 const features = [];
 
-                // Add sample features with IDs
+                // Add sample features
                 features.push(
                     new Feature({
                         geometry: new Point(fromLonLat([0, 0])),
                         id: "feature_0",
-                        type: "sample"
+                        name: "Sample Door 1",
+                        type: "door"
                     })
                 );
 
@@ -259,107 +317,113 @@ const OpenLayersImageMap = () => {
                     new Feature({
                         geometry: new Point(fromLonLat([5, 5])),
                         id: "feature_1",
-                        type: "sample"
+                        name: "Sample Door 2",
+                        type: "door"
                     })
                 );
 
-                // Add coordinates from API with IDs
+                // Add coordinates from API
                 coords?.forEach((c, index) =>
                     features.push(
                         new Feature({
                             geometry: new Point(fromLonLat([c.x, c.y])),
                             status: c.status,
                             id: c.id || `coord_${index}`,
-                            type: "coordinate"
+                            name: c.name || `Door ${index + 1}`,
+                            type: "door"
                         })
                     )
                 );
 
+                // Create vector source
                 const vectorSource = new VectorSource({ features });
                 vectorSourceRef.current = vectorSource;
 
-                // Listen for feature changes
-                vectorSource.on('changefeature', (event) => {
-                    const feature = event.feature;
-                    if (feature && editMode) {
-                        const newCoords = feature.getGeometry().getCoordinates();
-                        const lonLat = toLonLat(newCoords);
+                // Track feature movements
+                vectorSource.on('change', (event) => {
+                    if (editMode) {
+                        const moved = [];
+                        vectorSource.forEachFeature((feature) => {
+                            const geometry = feature.getGeometry();
+                            if (geometry && geometry instanceof Point) {
+                                const coords = geometry.getCoordinates();
+                                const lonLat = toLonLat(coords);
 
-                        // Track moved features
-                        setMovedFeatures(prev => {
-                            const existing = prev.find(f => f.id === feature.get('id'));
-                            if (existing) {
-                                return prev.map(f =>
-                                    f.id === feature.get('id')
-                                        ? { ...f, x: lonLat[0], y: lonLat[1] }
-                                        : f
-                                );
-                            } else {
-                                return [...prev, {
-                                    id: feature.get('id'),
+                                moved.push({
+                                    id: feature.getId() || feature.get('id'),
+                                    name: feature.get('name') || 'Unnamed',
                                     x: lonLat[0],
                                     y: lonLat[1],
-                                    type: feature.get('type')
-                                }];
+                                    type: feature.get('type') || 'feature'
+                                });
                             }
                         });
 
-                        console.log(`Feature ${feature.get('id')} moved to:`, lonLat);
+                        // Update state with unique features
+                        setMovedFeatures(prev => {
+                            const unique = [...moved];
+                            return unique;
+                        });
                     }
                 });
 
+                // Create cluster source
                 const clusterSource = new Cluster({
-                    distance: editMode ? 100 : 40, // Larger distance when editing to avoid clustering
+                    distance: 40,
                     source: vectorSource
                 });
 
-                const clusterLayer = new VectorLayer({
+                // Create cluster layer
+                clusterLayerRef.current = new VectorLayer({
                     source: clusterSource,
-                    style: clusterStyle
+                    style: (feature) => getClusterStyle(feature, false)
                 });
 
+                // Initialize map
                 mapInstance.current = new Map({
                     target: mapRef.current,
                     layers: [
-                        new TileLayer({ source: new OSM(), preload: Infinity }),
-                        clusterLayer
+                        new TileLayer({
+                            source: new OSM(),
+                            preload: Infinity
+                        }),
+                        clusterLayerRef.current
                     ],
                     view: new View({
                         center: fromLonLat([0, 0]),
                         zoom: 2,
                         minZoom: 1,
-                        maxZoom: 18
+                        maxZoom: 19
                     }),
                     controls: []
                 });
 
-                // 🖱️ Click cluster → zoom in
+                // Cluster click zoom
                 mapInstance.current.on("click", (evt) => {
-                    // Don't zoom if we're in edit mode
                     if (editMode) return;
 
                     mapInstance.current.forEachFeatureAtPixel(evt.pixel, (feature) => {
-                        const f = feature.get("features");
-                        if (!f || f.length <= 1) return;
-
-                        const view = mapInstance.current.getView();
-                        view.animate({
-                            center: evt.coordinate,
-                            zoom: view.getZoom() + 2,
-                            duration: 300
-                        });
+                        const clusterFeatures = feature.get("features");
+                        if (clusterFeatures && clusterFeatures.length > 1) {
+                            const view = mapInstance.current.getView();
+                            view.animate({
+                                center: evt.coordinate,
+                                zoom: view.getZoom() + 1,
+                                duration: 250
+                            });
+                        }
                     });
                 });
 
-                // 🖐️ Pointer cursor
+                // Pointer cursor
                 mapInstance.current.on("pointermove", (e) => {
                     const hit = mapInstance.current.hasFeatureAtPixel(e.pixel);
                     mapInstance.current.getTargetElement().style.cursor =
-                        editMode ? "move" : (hit ? "pointer" : "");
+                        editMode ? "move" : (hit ? "pointer" : "default");
                 });
 
             } catch (e) {
-                console.error(e);
+                console.error("Map initialization error:", e);
                 showSnackbar("Failed to load map data", "error");
             }
         })();
@@ -367,11 +431,12 @@ const OpenLayersImageMap = () => {
         return () => {
             if (mapInstance.current) {
                 mapInstance.current.setTarget(null);
+                mapInstance.current = null;
             }
         };
-    }, []);
+    }, [getClusterStyle]);
 
-    // Clean up interactions when component unmounts
+    // Clean up on unmount
     useEffect(() => {
         return () => {
             if (mapInstance.current) {
@@ -397,7 +462,16 @@ const OpenLayersImageMap = () => {
     // ================= UI =================
     return (
         <div>
-            <Box sx={{ p: 2, display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+            <Box sx={{
+                p: 2,
+                display: "flex",
+                gap: 2,
+                alignItems: "center",
+                flexWrap: "wrap",
+                backgroundColor: "background.paper",
+                borderBottom: 1,
+                borderColor: "divider"
+            }}>
                 <FormControl size="small" sx={{ minWidth: 180 }}>
                     <InputLabel>Archive</InputLabel>
                     <Select
@@ -405,6 +479,7 @@ const OpenLayersImageMap = () => {
                         label="Archive"
                         onChange={e => setSelectedFeature(e.target.value)}
                     >
+                        <MenuItem value=""><em>Select a file</em></MenuItem>
                         {featureOptions.map(o => (
                             <MenuItem key={o} value={o}>{o}</MenuItem>
                         ))}
@@ -415,31 +490,46 @@ const OpenLayersImageMap = () => {
                     variant="contained"
                     onClick={fetchFileByName}
                     disabled={!selectedFeature || loading.blob}
+                    startIcon={loading.blob ? <CircularProgress size={20} /> : null}
                 >
                     Fetch File
                 </Button>
 
                 <Button
                     variant="contained"
+                    color="secondary"
                     onClick={downloadFromBase64}
                     disabled={!base64File || loading.base64}
+                    startIcon={loading.base64 ? <CircularProgress size={20} /> : null}
                 >
                     Download Base64
                 </Button>
 
                 <Button
                     variant={editMode ? "contained" : "outlined"}
-                    color={editMode ? "secondary" : "primary"}
+                    color={editMode ? "warning" : "primary"}
                     onClick={toggleEditMode}
+                    sx={{ ml: 2 }}
                 >
                     {editMode ? "Exit Edit Mode" : "Edit Mode"}
                 </Button>
 
-                {(loading.base64 || loading.blob) && <CircularProgress size={24} />}
-
                 {editMode && (
-                    <Alert severity="info" sx={{ ml: 2 }}>
-                        Drag icons to move them. Moved features: {movedFeatures.length}
+                    <Alert
+                        severity="info"
+                        sx={{
+                            ml: "auto",
+                            "& .MuiAlert-message": {
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1
+                            }
+                        }}
+                    >
+                        <span>Drag icons to move</span>
+                        {movedFeatures.length > 0 && (
+                            <strong>({movedFeatures.length} moved)</strong>
+                        )}
                     </Alert>
                 )}
             </Box>
@@ -449,22 +539,44 @@ const OpenLayersImageMap = () => {
                 style={{
                     width: "100%",
                     height: "calc(100vh - 120px)",
-                    border: editMode ? "2px solid #1976d2" : "none"
+                    border: editMode ? "3px solid #ff9800" : "none",
+                    boxSizing: "border-box"
                 }}
             />
 
             <Snackbar
                 open={snackbar.open}
-                autoHideDuration={3000}
+                autoHideDuration={editMode ? 5000 : 3000}
                 onClose={closeSnackbar}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
-                <Alert onClose={closeSnackbar} severity={snackbar.severity}>
+                <Alert
+                    onClose={closeSnackbar}
+                    severity={snackbar.severity}
+                    variant="filled"
+                >
                     {snackbar.message}
                 </Alert>
             </Snackbar>
+
+            {/* Debug panel (optional) */}
+            {process.env.NODE_ENV === 'development' && movedFeatures.length > 0 && (
+                <Box sx={{
+                    p: 2,
+                    backgroundColor: '#f5f5f5',
+                    borderTop: 1,
+                    borderColor: 'divider',
+                    maxHeight: 200,
+                    overflowY: 'auto'
+                }}>
+                    <strong>Moved Features:</strong>
+                    <pre style={{ margin: 0, fontSize: 12 }}>
+                        {JSON.stringify(movedFeatures, null, 2)}
+                    </pre>
+                </Box>
+            )}
         </div>
     );
 };
 
-export default OpenLayersImageMap;
+export default MoveImageMap;

@@ -7,7 +7,7 @@ import ImageViewer from './ImageUi/ImageViewer';
 import Sidebar from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor, Dndreorder } from './ui/';
-import { LayerMap1, LayerMap, MiniMapIcons } from './Map/';
+import { LayerMap1, LayerMap, MiniMapIcons, MoveImageMap } from './Map/';
 import { TagFaces, Visibility, Fingerprint } from '@mui/icons-material';
 import Api from "./Pages/Api";
 import AnotherTabs from "./Pages/AnotherTabs";
@@ -46,6 +46,7 @@ function App() {
         { title: 'LayerMap', path: '/LayerMap' }, 
         { title: 'LayerMap1', path: '/LayerMap1' }, 
         { title: 'MiniMapIcons', path: '/MiniMapIcons' }, 
+        { title: 'MoveImageMap', path: '/MoveImageMap' }, 
         { title: 'Dndreorder', path: '/Dndreorder' }, 
         { title: 'ImageViewer', path: '/ImageViewer' }, 
         
@@ -83,6 +84,7 @@ function App() {
                             <li><Link to="/LayerMap">LayerMap</Link></li>
                             <li><Link to="/LayerMap1">LayerMap1</Link></li>
                             <li><Link to="/MiniMapIcons">MiniMapIcons</Link></li>
+                            <li><Link to="/MoveImageMap">MoveImageMap</Link></li>
                             <li><Link to="/Dndreorder">Dndreorder</Link></li>  
                             <li><Link to="/ImageViewer">ImageViewer</Link></li>  
                         </ul>
@@ -110,9 +112,9 @@ function App() {
                             <Route path="/OpenDoor" element={<OpenDoor />} />
                             <Route path="/LayerMap1" element={<LayerMap1 />} />
                             <Route path="/MiniMapIcons" element={<MiniMapIcons />} /> 
+                            <Route path="/MoveImageMap" element={<MoveImageMap />} /> 
                             <Route path="/Dndreorder" element={<Dndreorder />} /> 
-                            <Route path="/ImageViewer" element={<ImageViewer />} /> 
-                            
+                            <Route path="/ImageViewer" element={<ImageViewer />} />                         
                         </Routes>
                     </Suspense>
                 </div>

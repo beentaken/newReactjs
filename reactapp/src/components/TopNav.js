@@ -3,17 +3,20 @@ import { AppBar, Toolbar, Button, Box } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-    { label: "Home", path: "/" },
-    { label: "About", path: "/about" },
-    { label: "Toast", path: "/toastsample" },
-    { label: "Contact", path: "/contact" },
-    { label: "Checkbox", path: "/CheckboxesGroup" },
-    { label: "API", path: "/Api" },
-    { label: "Map", path: "/LayerMap" },
-    { label: "Image", path: "/ImageViewer" },
+    { title: "Home", path: "/" },
+    { title: "About", path: "/about" },
+    { title: "Toast", path: "/toastsample" },
+    { title: "Contact", path: "/contact" },
+    { title: "Checkbox", path: "/CheckboxesGroup" },
+    { title: "API", path: "/Api" },
+    { title: "Map", path: "/LayerMap" },
+    { title: "Image", path: "/ImageViewer" },
 ];
 
 export default function TopNav() {
+    const err = new Error();
+    const stackLines = err.stack.split("\n");
+    console.log(stackLines);
     return (
         <AppBar position="sticky" color="primary" elevation={2}>
             <Toolbar>
@@ -31,7 +34,7 @@ export default function TopNav() {
                                 },
                             }}
                         >
-                            {item.label}
+                            {item.title}
                         </Button>
                     ))}
                 </Box>
