@@ -43,10 +43,11 @@ function App() {
         { title: 'AnotherTabsConditional', path: '/AnotherTabsConditional' },
         { title: 'Memosample', path: '/Memosample' }, 
         { title: 'OpenDoor', path: '/OpenDoor' }, 
-        { title: 'LayerMap', path: '/LayerMap' }, 
-        { title: 'LayerMap1', path: '/LayerMap1' }, 
-        { title: 'MiniMapIcons', path: '/MiniMapIcons' }, 
-        { title: 'MoveImageMap', path: '/MoveImageMap' }, 
+        { title: 'Map'}, 
+        { title: 'LayerMap', path: '/LayerMap', sub: '/Map'}, 
+        { title: 'LayerMap1', path: '/LayerMap1', sub: '/Map' }, 
+        { title: 'MiniMapIcons', path: '/MiniMapIcons', sub: '/Map' }, 
+        { title: 'MoveImageMap', path: '/MoveImageMap', sub: '/Map' }, 
         { title: 'Dndreorder', path: '/Dndreorder' }, 
         { title: 'ImageViewer', path: '/ImageViewer' }, 
         
@@ -64,31 +65,7 @@ function App() {
                 <Sidebar pages={pages} />
                 <div className="main-content">
                     <h1>Welcome to My App</h1>
-                    <nav>
-                        <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li><Link to="/about">About</Link></li>
-                            <li><Link to="/toastsample">Toastsample</Link></li>
-                            <li><Link to="/contact">Contact</Link></li>
-                            <li><Link to="/CheckboxesGroup">CheckboxesGroup</Link></li>
-                            <li><Link to="/D4">D4</Link></li>
-                            <li><Link to="/D5">D5</Link></li>
-                            <li><Link to="/Api">Api</Link></li>
-                            <li><Link to="/AnotherTabs">AnotherTabs</Link></li>
-                            <li><Link to="/AnotherTabsLazy">AnotherTabsLazy</Link></li>
-                            <li><Link to="/AnotherTabsConditional">AnotherTabsConditional</Link></li>
-                            <li><Link to="/ColorPickerWithDialog">ColorPickerWithDialog</Link></li>
-                            <li><Link to="/FileUpload">FileUpload</Link></li>
-                            <li><Link to="/ObjectJson">ObjectJson</Link></li>
-                            <li><Link to="/OpenDoor">OpenDoor</Link></li>
-                            <li><Link to="/LayerMap">LayerMap</Link></li>
-                            <li><Link to="/LayerMap1">LayerMap1</Link></li>
-                            <li><Link to="/MiniMapIcons">MiniMapIcons</Link></li>
-                            <li><Link to="/MoveImageMap">MoveImageMap</Link></li>
-                            <li><Link to="/Dndreorder">Dndreorder</Link></li>  
-                            <li><Link to="/ImageViewer">ImageViewer</Link></li>  
-                        </ul>
-                    </nav>
+
   
                     {/* Display loading while components are being delayed */}
                     <Suspense fallback={<div>Loading...</div>}>

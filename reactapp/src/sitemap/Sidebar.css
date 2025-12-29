@@ -6,6 +6,10 @@
     color: white;
     padding: 16px;
     box-sizing: border-box;
+    position: fixed; /* optional: makes it sticky on scroll */
+    top: 0;
+    left: 0;
+    overflow-y: auto;
 }
 
 /* Sidebar title */
@@ -44,4 +48,54 @@
         background: #2563eb;
         color: #ffffff;
         font-weight: 500;
+    }
+
+    /* Sub-links (for Map section) */
+    .sidebar-link.sub {
+        padding-left: 28px; /* indent sub-items */
+        font-size: 0.95em;
+    }
+
+/* Accordion (Map section) */
+.accordion {
+    margin-top: 8px;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #d1d5db;
+    transition: background 0.2s ease;
+}
+
+    .accordion-header:hover {
+        background: #1f2937;
+    }
+
+    .accordion-header span:first-child {
+        font-weight: 500;
+    }
+
+.arrow {
+    font-size: 1.1em;
+    transition: transform 0.3s ease;
+}
+
+    .arrow.open {
+        transform: rotate(90deg);
+    }
+
+/* Accordion content (sub-menu) */
+.accordion-content {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+    .accordion-content li {
+        margin: 0;
     }
