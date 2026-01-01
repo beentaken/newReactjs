@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-function Navbar({ pages }) {
+export default function DashboardMenu({ pages }) {
     const [openSubs, setOpenSubs] = useState({});
 
     const parents = pages.filter(p => !p.sub && !p.path);
@@ -54,5 +54,3 @@ function Navbar({ pages }) {
         </nav>
     );
 }
-
-export default Navbar;

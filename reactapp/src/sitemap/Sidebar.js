@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-function Route({ pages }) {
+export default function Route({ pages }) {
     const [openMap, setOpenMap] = useState(true);
 
     const mainPages = pages.filter(p => !p.sub && p.path);
@@ -60,5 +60,3 @@ function Route({ pages }) {
         </aside>
     );
 }
-
-export default Route;
