@@ -4,9 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home';
 import PagesMain from './Pages/PagesMain';
 import ImageViewer from './ImageUi/ImageViewer';
-import Sidebar from './sitemap/Sidebar';
-import DashboardMenu from './sitemap/DashboardMenu';
-
+import Sidebar, {DashboardMenu } from './sitemap/Sidebar';
 import ObjectJson from './ui/ObjectJson';
 import { CheckboxesGroup, ColorPickerWithDialog, FileUpload, Toastsample, OpenDoor, Dndreorder } from './ui/';
 import { LayerMap1, LayerMap, MiniMapIcons, MoveImageMap } from './Map/';
@@ -19,7 +17,7 @@ import Memosample from "./Rendering/Memosample";
 import D4 from "./date/D4";
 import D5 from "./date/D5";
 import './App.css';
-
+import { D1, D2, D3 } from "./DatepickerUi/src/";
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -35,8 +33,8 @@ function App() {
         { title: 'Contact', path: '/contact' },
         { title: 'CheckboxesGroup', path: '/CheckboxesGroup' },
         { title: 'ColorPickerWithDialog', path: '/ColorPickerWithDialog' },
-        { title: 'D5', path: '/D5' },
         { title: 'D4', path: '/D4' },
+        { title: 'D5', path: '/D5' },
         { title: 'FileUpload', path: '/FileUpload' },
         { title: 'ObjectJson', path: '/ObjectJson' },
         { title: 'Api', path: '/api' },
