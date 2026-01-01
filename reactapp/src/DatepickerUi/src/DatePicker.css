@@ -1,0 +1,48 @@
+/* DatePicker.css */
+
+.date-picker {
+  position: relative;
+  font-family: Arial, sans-serif;
+  display: inline-block;
+}
+
+input {
+  padding: 8px;
+  width: 150px;
+  text-align: center;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.calendar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.day.empty {
+  visibility: hidden;
+}
+
+td.disabled {
+  background-color: #eee; /* Light gray for disabled dates */
+  cursor: not-allowed;
+}

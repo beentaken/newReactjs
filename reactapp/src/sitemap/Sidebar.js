@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
-function Sidebar({ pages }) {
+function Route({ pages }) {
     const [openMap, setOpenMap] = useState(true);
 
     const mainPages = pages.filter(p => !p.sub && p.path);
-    const mapPages = pages.filter(p => p.sub === "/Map");
+    const mapPages = pages.filter(p => p.sub === "Map");
 
     return (
         <aside className="sidebar">
@@ -27,7 +27,7 @@ function Sidebar({ pages }) {
                     </li>
                 ))}
 
-                {/* Accordion */}
+                {/* Map Accordion */}
                 <li className="accordion">
                     <div
                         className="accordion-header"
@@ -61,4 +61,4 @@ function Sidebar({ pages }) {
     );
 }
 
-export default Sidebar;
+export default Route;

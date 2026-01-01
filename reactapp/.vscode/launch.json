@@ -9,9 +9,9 @@
       "webRoot": "${workspaceFolder}"
     },
     {
-      "type": "chrome",
-      "request": "launch",
-      "name": "localhost (Chrome)",
+      "type": "edge",
+      "request": "attach",
+      "name": "React (Edge)",
       "url": "https://localhost:3000",
       "webRoot": "${workspaceFolder}"
     }
