@@ -1,3 +1,32 @@
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* main menu items */
+nav > ul > li {
+    margin-bottom: 6px;
+}
+
+/* sub menu container */
+nav ul ul {
+    margin-top: 6px;
+    margin-left: 16px; /* indent */
+    padding-left: 8px;
+    display: block; /* FORCE vertical */
+    position: fixed; /* NOT absolute */
+}
+
+    /* sub menu items */
+    nav ul ul li {
+        margin: 4px 0;
+    }
+
+/* optional */
+nav span {
+    display: block; /* ensures click area is full width */
+}
 /* Sidebar container */
 .sidebar {
     width: 220px;
@@ -99,3 +128,4 @@
     .accordion-content li {
         margin: 0;
     }
+

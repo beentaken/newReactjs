@@ -3,17 +3,34 @@ import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import "./Sidebar.css";
 
-export default function Route({ pages }) {
-    const [openMap, setOpenMap] = useState(true);
+export default function Sidebar({ pages }) {
+    const [openSubs, setOpenSubs] = useState({});
 
-    const mainPages = pages.filter(p => !p.sub && p.path);
-    const mapPages = pages.filter(p => p.sub === "Map");
+    // normal pages (no sub)
+    const mainPages = pages.filter(p => p.path && !p.sub);
+
+    // group sub pages by sub name
+    const groupedSubs = pages.reduce((acc, page) => {
+        if (page.sub) {
+            acc[page.sub] = acc[page.sub] || [];
+            acc[page.sub].push(page);
+        }
+        return acc;
+    }, {});
+
+    const toggle = (key) => {
+        setOpenSubs(prev => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
 
     return (
         <aside className="sidebar">
             <h2 className="sidebar-title">Menu</h2>
 
             <ul className="sidebar-list">
+                {/* main links */}
                 {mainPages.map(page => (
                     <li key={page.path}>
                         <NavLink
@@ -27,35 +44,43 @@ export default function Route({ pages }) {
                     </li>
                 ))}
 
-                {/* Map Accordion */}
-                <li className="accordion">
-                    <div
-                        className="accordion-header"
-                        onClick={() => setOpenMap(!openMap)}
-                    >
-                        <span>Map</span>
-                        <span className={`arrow ${openMap ? "open" : ""}`}>▸</span>
-                    </div>
+                {/* sub menus */}
+                {Object.entries(groupedSubs).map(([group, items]) => {
+                    const isOpen = openSubs[group];
 
-                    {openMap && (
-                        <ul className="accordion-content">
-                            {mapPages.map(page => (
-                                <li key={page.path}>
-                                    <NavLink
-                                        to={page.path}
-                                        className={({ isActive }) =>
-                                            isActive
-                                                ? "sidebar-link sub active"
-                                                : "sidebar-link sub"
-                                        }
-                                    >
-                                        {page.title}
-                                    </NavLink>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </li>
+                    return (
+                        <li key={group} className="accordion">
+                            <div
+                                className="accordion-header"
+                                onClick={() => toggle(group)}
+                            >
+                                <span>{group}</span>
+                                <span className={`arrow ${isOpen ? "open" : ""}`}>
+                                    &gt;
+                                </span>
+                            </div>
+
+                            {isOpen && (
+                                <ul className="accordion-content">
+                                    {items.map(item => (
+                                        <li key={item.path}>
+                                            <NavLink
+                                                to={item.path}
+                                                className={({ isActive }) =>
+                                                    isActive
+                                                        ? "sidebar-link sub active"
+                                                        : "sidebar-link sub"
+                                                }
+                                            >
+                                                {item.title}
+                                            </NavLink>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </li>
+                    );
+                })}
             </ul>
         </aside>
     );
@@ -65,13 +90,22 @@ export default function Route({ pages }) {
 export function DashboardMenu({ pages }) {
     const [openSubs, setOpenSubs] = useState({});
 
-    const parents = pages.filter(p => !p.sub && !p.path);
+    // normal links (no sub)
     const normalLinks = pages.filter(p => p.path && !p.sub);
 
-    const toggleSub = (title) => {
+    // group sub menus
+    const subGroups = pages.reduce((acc, page) => {
+        if (page.sub) {
+            acc[page.sub] = acc[page.sub] || [];
+            acc[page.sub].push(page);
+        }
+        return acc;
+    }, {});
+
+    const toggleSub = (group) => {
         setOpenSubs(prev => ({
             ...prev,
-            [title]: !prev[title],
+            [group]: !prev[group],
         }));
     };
 
@@ -80,32 +114,31 @@ export function DashboardMenu({ pages }) {
             <ul>
                 {/* normal menu items */}
                 {normalLinks.map(page => (
-                    <li key={page.title}>
+                    <li key={page.path}>
                         <Link to={page.path}>{page.title}</Link>
                     </li>
                 ))}
 
                 {/* sub menus */}
-                {parents.map(parent => {
-                    const isOpen = openSubs[parent.title];
+                {Object.entries(subGroups).map(([group, items]) => {
+                    const isOpen = openSubs[group];
+
                     return (
-                        <li key={parent.title}>
+                        <li key={group}>
                             <span
                                 style={{ cursor: "pointer", fontWeight: "bold" }}
-                                onClick={() => toggleSub(parent.title)}
+                                onClick={() => toggleSub(group)}
                             >
-                                {parent.title}
+                                {group} {isOpen ? ">" : ""}
                             </span>
 
                             {isOpen && (
                                 <ul>
-                                    {pages
-                                        .filter(p => p.sub === parent.title)
-                                        .map(child => (
-                                            <li key={child.title}>
-                                                <Link to={child.path}>{child.title}</Link>
-                                            </li>
-                                        ))}
+                                    {items.map(item => (
+                                        <li key={item.path}>
+                                            <Link to={item.path}>{item.title}</Link>
+                                        </li>
+                                    ))}
                                 </ul>
                             )}
                         </li>
