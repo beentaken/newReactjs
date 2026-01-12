@@ -26,36 +26,44 @@ const Contact = lazy(() => wait(1000).then(() => import('./Pages/Contact')));
 const About = lazy(() => import('./Pages/About'));
 
 function App() {
-    const pages = [
-        { title: 'Home', path: '/' },
-        { title: 'Toastsample', path: '/toastsample' },
-        { title: 'About', path: '/about' },
-        { title: 'Contact', path: '/contact' },
-        { title: 'CheckboxesGroup', path: '/CheckboxesGroup' },
-        { title: 'ColorPickerWithDialog', path: '/ColorPickerWithDialog' },
-        { title: 'D4', path: '/D4', sub: 'DateUI' },
-        { title: 'D5', path: '/D5', sub: 'DateUI' },
-        { title: 'FileUpload', path: '/FileUpload' },
-        { title: 'ObjectJson', path: '/ObjectJson' },
-        { title: 'Api', path: '/api' },
-        { title: 'AnotherTabs', path: '/AnotherTabs', sub: 'Tab'},
-        { title: 'AnotherTabsLazy', path: '/AnotherTabsLazy', sub: 'Tab' },
-        { title: 'AnotherTabsConditional', path: '/AnotherTabsConditional', sub: 'Tab' },
-        { title: 'Memosample', path: '/Memosample' }, 
-        { title: 'OpenDoor', path: '/OpenDoor' }, 
-        { title: 'Map'}, 
-        { title: 'LayerMap', path: '/LayerMap', sub: 'Map'}, 
-        { title: 'LayerMap1', path: '/LayerMap1', sub: 'Map' }, 
-        { title: 'MiniMapIcons', path: '/MiniMapIcons', sub: 'Map' }, 
-        { title: 'MoveImageMap', path: '/MoveImageMap', sub: 'Map' }, 
-        { title: 'Dndreorder', path: '/Dndreorder' }, 
-        { title: 'ImageViewer', path: '/ImageViewer' }, 
-        
-    ]; 
+
+
     const biooption = [
         { name: "Face", id: "0", bool: false, icon: TagFaces },
         { name: "Iris", id: "1", bool: false, icon: Visibility },
         { name: "Finger", id: "2", bool: true, icon: Fingerprint },
+    ];
+
+
+    const pages = [
+        { title: 'Home', path: '/', element: <Home /> },
+        { title: 'Toastsample', path: '/toastsample', element: <Toastsample /> },
+        { title: 'About', path: '/about', element: <About /> },
+        { title: 'Contact', path: '/contact', element: <Contact /> },
+        { title: 'CheckboxesGroup', path: '/CheckboxesGroup', element: <CheckboxesGroup biooptions={biooption} /> },
+        { title: 'ColorPickerWithDialog', path: '/ColorPickerWithDialog', element: <ColorPickerWithDialog /> },
+
+        // DateUI
+        { title: 'D1', path: '/D1', sub: 'DateUI', element: <D1 /> },
+        { title: 'D2', path: '/D2', sub: 'DateUI', element: <D2 /> },
+
+        { title: 'FileUpload', path: '/FileUpload', element: <FileUpload /> },
+        { title: 'ObjectJson', path: '/ObjectJson', element: <ObjectJson /> },
+        { title: 'Api', path: '/api', element: <Api /> },
+
+        // Tabs
+        { title: 'AnotherTabs', path: '/AnotherTabs', element: <AnotherTabs /> },
+        { title: 'AnotherTabsLazy', path: '/AnotherTabsLazy', element: <AnotherTabsLazy /> },
+        { title: 'AnotherTabsConditional', path: '/AnotherTabsConditional', element: <AnotherTabsConditional /> },
+        { title: 'OpenDoor', path: '/OpenDoor', element: <OpenDoor /> },
+        // Map routes
+        { title: 'LayerMap', path: '/LayerMap', sub: 'Map', element: <LayerMap /> },
+        { title: 'LayerMap1', path: '/LayerMap1', sub: 'Map', element: <LayerMap1 /> },
+        { title: 'MiniMapIcons', path: '/MiniMapIcons', sub: 'Map', element: <MiniMapIcons /> },
+        { title: 'MoveImageMap', path: '/MoveImageMap', sub: 'Map', element: <MoveImageMap /> },
+
+        { title: 'Dndreorder', path: '/Dndreorder', element: <Dndreorder /> },
+        { title: 'ImageViewer', path: '/ImageViewer', element: <ImageViewer /> },
     ];
 
     return (
@@ -69,28 +77,10 @@ function App() {
                     {/* Display loading while components are being delayed */}
                     <Suspense fallback={<div>Loading...</div>}>
                         <Routes>
+                            {pages.map(page => (
+                                <Route key={page.path} path={page.path} element={page.element} />
+                            ))}
                             <Route path="/" element={<LayerMap />} />
-                            <Route path="/toastsample" element={<Toastsample />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/CheckboxesGroup" element={<CheckboxesGroup biooptions={biooption} />} />
-                            <Route path="/D4" element={<D4 />} />
-                            <Route path="/D5" element={<D5 />} />
-                            <Route path="/ColorPickerWithDialog" element={<ColorPickerWithDialog />} />
-                            <Route path="/FileUpload" element={<FileUpload />} />
-                            <Route path="/ObjectJson" element={<ObjectJson />} />
-                            <Route path="/Api" element={<Api />} />
-                            <Route path="/AnotherTabs" element={<AnotherTabs />} />
-                            <Route path="/AnotherTabsLazy" element={<AnotherTabsLazy />} />
-                            <Route path="/AnotherTabsConditional" element={<AnotherTabsConditional />} />
-                            <Route path="/PagesMain" element={<PagesMain />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/OpenDoor" element={<OpenDoor />} />
-                            <Route path="/LayerMap1" element={<LayerMap1 />} />
-                            <Route path="/MiniMapIcons" element={<MiniMapIcons />} /> 
-                            <Route path="/MoveImageMap" element={<MoveImageMap />} /> 
-                            <Route path="/Dndreorder" element={<Dndreorder />} /> 
-                            <Route path="/ImageViewer" element={<ImageViewer />} />                         
                         </Routes>
                     </Suspense>
                 </div>
