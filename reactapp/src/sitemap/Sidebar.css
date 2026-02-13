@@ -23,6 +23,12 @@ nav ul ul {
         margin: 4px 0;
     }
 
+
+    nav ul ul li {
+        color: #d1d5db; /* lighter text */
+    }
+          
+
 /* optional */
 nav span {
     display: block; /* ensures click area is full width */

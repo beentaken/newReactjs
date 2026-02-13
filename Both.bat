@@ -1,1 +1,0 @@
-cmd /k docker compose -f both.yml up -d
