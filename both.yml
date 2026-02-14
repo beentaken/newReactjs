@@ -91,8 +91,17 @@ services:
       - "1433:1433"
     volumes:
       - mssql_data:/var/opt/mssql
+      # Mount init script
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      # Mount custom entrypoint
+      - ./entrypoint.sh:/entrypoint.sh:ro
+    #entrypoint: ["/bin/bash", "/entrypoint.sh"]
     networks:
       - keycloak-net
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong!Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 10
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
