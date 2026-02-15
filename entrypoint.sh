@@ -6,9 +6,14 @@
 echo "Waiting for SQL Server to start..."
 sleep 20
 
+# Set password as variable (using single quotes)
+PASSWORD='YourStrong!Passw0rd'
+
+
 # Run initialization script
 echo "Running init.sql..."
-sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -i /docker-entrypoint-initdb.d/init.sql
-
+# Then use the variable
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD" -C -i /docker-entrypoint-initdb.d/init.sql
+echo "Running init.sql... complete"
 # Keep container running
-wait
+# wait

@@ -60,3 +60,19 @@ openssl pkcs12 -export -out myapp.pfx -inkey key.pem -in cert.pem -password pass
 dotnet dev-certs https -t
 dotnet dev-certs https --clean
 copy  the cert in "C:\Users\xxxx\AppData\Roaming\ASP.NET\https" into https folder of react app
+
+docker exec -it mssql bash
+docker exec -it mssql -u root -p
+
+cd /opt/mssql-tools18/bin
+bash entrypoint.sh 
+dos2unix entrypoint.sh 
+docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd
+
+
+# Set password as variable (using single quotes)
+PASSWORD='YourStrong!Passw0rd'
+
+# Then use the variable
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD"
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD" -C -i /docker-entrypoint-initdb.d/init.sql
