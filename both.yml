@@ -34,8 +34,17 @@ services:
       MYSQL_PASSWORD: keycloakpassword
     volumes:
       - mysql_data:/var/lib/mysql
+      # Mount init script
+      - ./dbscript/mysqlinit.sql:/docker-entrypoint-initdb.d/mysqlinit.sql:ro
+      # Mount custom entrypoint
+      - ./script/mysqlentrypoint.sh:/mysqlentrypoint.sh:ro
+    entrypoint: ["/bin/bash", "/mysqlentrypoint.sh"]
     networks:
       - keycloak-net
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong!Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 10
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -92,10 +101,10 @@ services:
     volumes:
       - mssql_data:/var/opt/mssql
       # Mount init script
-      - ./dbscript/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./dbscript/mssqlinit.sql:/docker-entrypoint-initdb.d/mssqlinit.sql:ro
       # Mount custom entrypoint
-      - ./script/entrypoint.sh:/entrypoint.sh:ro
-    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+      - ./script/mssqlentrypoint.sh:/mssqlentrypoint.sh:ro
+    entrypoint: ["/bin/bash", "/mssqlentrypoint.sh"]
     networks:
       - keycloak-net
     healthcheck:

@@ -13,7 +13,7 @@ PASSWORD='YourStrong!Passw0rd'
 # Run initialization script
 echo "Running init.sql..."
 # Then use the variable
-/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD" -C -i /docker-entrypoint-initdb.d/init.sql
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD" -C -i /docker-entrypoint-initdb.d/mssqlinit.sql
 echo "Running init.sql... complete"
 # Keep container running
 # wait
