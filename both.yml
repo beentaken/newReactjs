@@ -92,9 +92,9 @@ services:
     volumes:
       - mssql_data:/var/opt/mssql
       # Mount init script
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./dbscript/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       # Mount custom entrypoint
-      - ./entrypoint.sh:/entrypoint.sh:ro
+      - ./script/entrypoint.sh:/entrypoint.sh:ro
     entrypoint: ["/bin/bash", "/entrypoint.sh"]
     networks:
       - keycloak-net
