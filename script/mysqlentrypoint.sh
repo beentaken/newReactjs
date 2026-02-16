@@ -12,7 +12,7 @@ until mysqladmin ping -h"localhost" -P3306 --silent; do
 done
 
 # Set password as variable
-PASSWORD='YourStrong!Passw0rd'
+PASSWORD='rootpassword'
 
 # Run initialization script
 echo "Running init.sql..."

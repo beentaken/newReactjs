@@ -42,8 +42,10 @@ services:
     networks:
       - keycloak-net
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong!Passw0rd", "-Q", "SELECT 1"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      # test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ukeycloak", "-pkeycloakpassword"]
       interval: 10s
+      timeout: 5s
       retries: 10
 
   phpmyadmin:
@@ -110,6 +112,7 @@ services:
     healthcheck:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong!Passw0rd", "-Q", "SELECT 1"]
       interval: 10s
+      timeout: 5s
       retries: 10
 
   keycloak:
