@@ -1,0 +1,1 @@
+docker exec -it mongodb mongosh -u admin -p password --authenticationDatabase admin TestDB --eval "db.users.insertOne({name:'Alice', email:25})"
