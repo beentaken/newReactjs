@@ -45,4 +45,23 @@ if (db.users.countDocuments() === 0) {
 
 }
 
+if (db.users.countDocuments() === 1) {
+
+    const user = db.users.insertOne({
+        name: "John1",
+        email: "john1@email.com"
+    });
+
+    db.productInventory.insertOne({
+        productName: "Laptop",
+        price: 1000,
+        inStock: true,
+        dateAdded: new Date(),
+        description: "GISP laptop",
+        addedByUserId: user.insertedId
+    });
+
+}
+
+
 print("MongoDB initialization completed.");

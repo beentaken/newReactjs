@@ -76,3 +76,9 @@ PASSWORD='YourStrong!Passw0rd'
 # Then use the variable
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD"
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$PASSWORD" -C -i /docker-entrypoint-initdb.d/init.sql
+
+
+
+
+# API ui
+http://localhost:7048/swagger/index.html
