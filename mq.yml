@@ -1,0 +1,56 @@
+name: mq
+version: "3.8"
+
+services:
+  ibmmq:
+    image: ibmcom/mq:latest
+    container_name: ibmmq
+    restart: unless-stopped
+    ports:
+      - "1414:1414"    # IBM MQ listener port
+      - "9444:9443"    # IBM MQ Console (changed to 9444 to avoid conflict with Portainer's 9443)
+    environment:
+      LICENSE: accept
+      MQ_QMGR_NAME: QM1
+      MQ_APP_PASSWORD: passw0rd
+      MQ_ADMIN_PASSWORD: admin123
+    volumes:
+      - ibmmq_data:/mnt/mqm/data
+      - ibmmq_log:/mnt/mqm/log
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"      # AMQP protocol port
+      - "15672:15672"    # Management UI web interface
+      - "1883:1883"      # MQTT protocol port
+      - "15675:15675"    # MQTT over WebSockets
+      - "61613:61613"    # STOMP protocol port
+      - "15674:15674"    # STOMP over WebSockets
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: StrongPassword!
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./conf:/etc/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: >
+      bash -c "
+        rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_stomp rabbitmq_web_mqtt rabbitmq_web_stomp &&
+        rabbitmq-server
+      "
+
+volumes:
+  ibmmq_data:
+    driver: local
+  ibmmq_log:
+    driver: local
+  rabbitmq_data:
+    driver: local
