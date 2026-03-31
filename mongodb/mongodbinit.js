@@ -63,5 +63,26 @@ if (db.users.countDocuments() === 1) {
 
 }
 
+db.createCollection("sensor_data", {
+    timeseries: {
+        timeField: "timestamp",
+        metaField: "deviceId",
+        granularity: "seconds"
+    },
+    expireAfterSeconds: 3600   // ⏱️ 1 hour
+});
+
+db.sensor_data.insertOne({
+    timestamp: new Date(),
+    deviceId: "sensor-1",
+    temperature: 25.8
+});
+
+db.sensor_data.insertMany([
+    { timestamp: new Date(), deviceId: "sensor-1", temperature: 25.8 },
+    { timestamp: new Date(), deviceId: "sensor-2", temperature: 23.4 },
+    { timestamp: new Date(), deviceId: "sensor-3", temperature: 27.1 },
+    { timestamp: new Date(), deviceId: "sensor-4", temperature: 22.9 }
+]);
 
 print("MongoDB initialization completed.");

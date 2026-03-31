@@ -35,9 +35,9 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       # Mount init script
-      - ./dbscript/mysqlinit.sql:/docker-entrypoint-initdb.d/mysqlinit.sql:ro
+      - ./mysql/mysqlinit.sql:/docker-entrypoint-initdb.d/mysqlinit.sql:ro
       # Mount custom entrypoint
-      - ./script/mysqlentrypoint.sh:/mysqlentrypoint.sh:ro
+      - ./mysql/script/mysqlentrypoint.sh:/mysqlentrypoint.sh:ro
     entrypoint: ["/bin/bash", "/mysqlentrypoint.sh"]
     networks:
       - keycloak-net
@@ -75,7 +75,7 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-      - ./dbscript/mongodbinit.js:/docker-entrypoint-initdb.d/mongodbinit.js:ro
+      - ./mongodb/mongodbinit.js:/docker-entrypoint-initdb.d/mongodbinit.js:ro
 
   mongo-express:
     image: mongo-express:latest
@@ -103,9 +103,9 @@ services:
     volumes:
       - mssql_data:/var/opt/mssql
       # Mount init script
-      - ./dbscript/mssqlinit.sql:/docker-entrypoint-initdb.d/mssqlinit.sql:ro
+      - ./mssql/mssqlinit.sql:/docker-entrypoint-initdb.d/mssqlinit.sql:ro
       # Mount custom entrypoint
-      - ./script/mssqlentrypoint.sh:/mssqlentrypoint.sh:ro
+      - ./mssql/script/mssqlentrypoint.sh:/mssqlentrypoint.sh:ro
     entrypoint: ["/bin/bash", "/mssqlentrypoint.sh"]
     networks:
       - keycloak-net

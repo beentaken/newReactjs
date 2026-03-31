@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     ports:
       - "1414:1414"    # IBM MQ listener port
-      - "9444:9443"    # IBM MQ Console (changed to 9444 to avoid conflict with Portainer's 9443)
+      - "9444:9443"    # IBM MQ Console
     environment:
       LICENSE: accept
       MQ_QMGR_NAME: QM1
@@ -47,10 +47,39 @@ services:
         rabbitmq-server
       "
 
+  solace:
+    image: solace/solace-pubsub-standard:latest
+    container_name: solace
+    restart: unless-stopped
+    shm_size: 2g
+    ports:
+      - "8082:8080"      # Management Console UI
+      - "1884:1883"      # MQTT protocol
+      - "8001:8000"      # REST messaging
+      - "55443:55443"    # Secure MQTT (MQTTS)
+      - "1943:1943"      # Secure SMF (SMFS)
+    environment:
+      - username_admin_globalaccesslevel=admin
+      - username_admin_password=admin
+      - system_scaling_maxconnectioncount=100
+    volumes:
+      - solace_data:/var/lib/solace
+    ulimits:
+      nofile:
+        soft: 2448
+        hard: 38048
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   ibmmq_data:
     driver: local
   ibmmq_log:
     driver: local
   rabbitmq_data:
+    driver: local
+  solace_data:
     driver: local
