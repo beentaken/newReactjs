@@ -1,14 +1,18 @@
 name: mq
 version: "3.8"
 
+networks:
+  message-brokers:
+    driver: bridge
+
 services:
   ibmmq:
     image: ibmcom/mq:latest
     container_name: ibmmq
     restart: unless-stopped
     ports:
-      - "1414:1414"    # IBM MQ listener port
-      - "9444:9443"    # IBM MQ Console
+      - "1414:1414"
+      - "9444:9443"
     environment:
       LICENSE: accept
       MQ_QMGR_NAME: QM1
@@ -17,18 +21,24 @@ services:
     volumes:
       - ibmmq_data:/mnt/mqm/data
       - ibmmq_log:/mnt/mqm/log
+    networks:
+      - message-brokers
+    deploy:
+      resources:
+        limits:
+          memory: 1G
 
   rabbitmq:
     image: rabbitmq:4-management
     container_name: rabbitmq
     restart: unless-stopped
     ports:
-      - "5672:5672"      # AMQP protocol port
-      - "15672:15672"    # Management UI web interface
-      - "1883:1883"      # MQTT protocol port
-      - "15675:15675"    # MQTT over WebSockets
-      - "61613:61613"    # STOMP protocol port
-      - "15674:15674"    # STOMP over WebSockets
+      - "5672:5672"
+      - "15672:15672"
+      - "1883:1883"
+      - "15675:15675"
+      - "61613:61613"
+      - "15674:15674"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: StrongPassword!
@@ -36,6 +46,8 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
       - ./conf:/etc/rabbitmq
+    networks:
+      - message-brokers
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 30s
@@ -43,9 +55,13 @@ services:
       retries: 5
     command: >
       bash -c "
-        rabbitmq-plugins enable --offline rabbitmq_mqtt rabbitmq_stomp rabbitmq_web_mqtt rabbitmq_web_stomp &&
+        rabbitmq-plugins enable rabbitmq_mqtt rabbitmq_stomp rabbitmq_web_mqtt rabbitmq_web_stomp &&
         rabbitmq-server
       "
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   solace:
     image: solace/solace-pubsub-standard:latest
@@ -53,17 +69,19 @@ services:
     restart: unless-stopped
     shm_size: 2g
     ports:
-      - "8082:8080"      # Management Console UI
-      - "1884:1883"      # MQTT protocol
-      - "8001:8000"      # REST messaging
-      - "55443:55443"    # Secure MQTT (MQTTS)
-      - "1943:1943"      # Secure SMF (SMFS)
+      - "8082:8080"
+      - "1884:1883"
+      - "8001:8000"
+      - "55443:55443"
+      - "1943:1943"
     environment:
       - username_admin_globalaccesslevel=admin
       - username_admin_password=admin
       - system_scaling_maxconnectioncount=100
     volumes:
       - solace_data:/var/lib/solace
+    networks:
+      - message-brokers
     ulimits:
       nofile:
         soft: 2448
@@ -73,13 +91,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
 
 volumes:
   ibmmq_data:
-    driver: local
   ibmmq_log:
-    driver: local
   rabbitmq_data:
-    driver: local
   solace_data:
-    driver: local
