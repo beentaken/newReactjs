@@ -1,4 +1,5 @@
-version: '3.8'
+name: other
+version: "3.8"
 
 services:
   portainer:
@@ -6,21 +7,15 @@ services:
     container_name: portainer
     restart: always
     ports:
-      - "9000:9000"
-      - "9443:9443"
+      - "9000:9000"   # HTTP UI
+      - "9443:9443"   # HTTPS UI
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    environment:
-      # Create admin account automatically
-      - ADMIN_USERNAME=admin
-      - ADMIN_PASSWORD=StrongP@ssw0rd123
     command: >
-      --admin-password-file /run/secrets/admin_password
-
-secrets:
-  admin_password:
-    file: ./admin_password.txt
+      --admin-password '$2y$05$Vv1z1n1ZbZxZbZxZbZxZbOeZbZxZbZxZbZxZbZxZbZxZbZxZb'
+      --http-enabled
+      --ssl=false
 
 volumes:
   portainer_data:

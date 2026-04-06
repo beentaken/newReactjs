@@ -82,3 +82,4 @@ PASSWORD='YourStrong!Passw0rd'
 
 # API ui
 http://localhost:7048/swagger/index.html
+./deploy-portainer.sh
