@@ -20,7 +20,9 @@ docker run -d \
   -v //var/run/docker.sock:/var/run/docker.sock \
   -v portainer_data:/data \
   portainer/portainer-ce:latest \
-  --admin-password="$HASH"
+  --admin-password="$HASH" \
+  --http-enabled \
+  --ssl=false
 
 echo "Portainer started with admin password: $PASSWORD"
 echo "Access at: https://localhost:9443"
