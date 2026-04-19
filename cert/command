@@ -1,0 +1,12 @@
+openssl genrsa -out private.key 2048
+openssl genrsa -aes256 -out private_key.pem 2048
+
+
+openssl req -new -key private.key -out request.csr
+openssl req -x509 -new -nodes -key private.key -sha256 -days 365 -out certificate.crt
+
+
+openssl req -x509 -newkey rsa:2048 -keyout private.key -out certificate.crt -days 365 -nodes
+
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout private.key -out certificate2.crt -config san.cnf

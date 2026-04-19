@@ -4,6 +4,6 @@ docker compose -f kafka.yml up -d
 # docker compose -f portainer.yml up -d
 docker compose -f mq.yml up -d
 # docker compose -f portainer2.yml up -d
-
+./deploy-portainer.sh
 # cmd /k docker compose -f kafka.yml up -d
 
