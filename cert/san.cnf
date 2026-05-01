@@ -2,7 +2,7 @@
 default_bits = 2048
 prompt = no
 distinguished_name = dn
-req_extensions = req_ext
+x509_extensions = v3_req
 
 [dn]
 C = sg
@@ -13,9 +13,12 @@ OU = sg
 CN = sg
 emailAddress = sg
 
-[req_ext]
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = example.com
-DNS.2 = www.example.com
+DNS.1 = localhost
