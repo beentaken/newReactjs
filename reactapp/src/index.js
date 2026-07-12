@@ -1,20 +1,12 @@
-import React from 'react'; //17
-import ReactDOM from 'react-dom'; 
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 
-// Use the ReactDOM.render method
-ReactDOM.render(
+// Use the React 18 root API
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root') // Specify the container
+  </React.StrictMode>
 );
-
-
-
-// src/index.js (or main entry file) //18
-//import { createRoot } from 'react-dom/client';
-//import App from './App';
-
-//const root = createRoot(document.getElementById('root'));
-//root.render(<App />);
