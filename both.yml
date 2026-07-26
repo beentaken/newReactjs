@@ -1,6 +1,6 @@
 name: reactapp-keycloak-mysql
 
-version: '3.8'
+
 
 services:
   webapi:
@@ -143,3 +143,9 @@ volumes:
 networks:
   keycloak-net:
     driver: bridge
+
+
+
+
+
+        
