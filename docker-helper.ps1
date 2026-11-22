@@ -6,6 +6,8 @@ param(
 	[string]$Command = ""
 )
 
+Set-Location -Path $PSScriptRoot
+
 function Show-Help {
 	Write-Host ""
 	Write-Host "Docker Helper Commands:" -ForegroundColor Cyan
@@ -32,7 +34,11 @@ if ([string]::IsNullOrEmpty($Command)) {
 switch ($Command.ToLower()) {
 	"start" {
 		Write-Host "Starting Docker containers..." -ForegroundColor Yellow
-		docker-compose up -d
+		docker compose up -d
+		if ($LASTEXITCODE -ne 0) {
+			Write-Host "Failed to start Docker containers." -ForegroundColor Red
+			break
+		}
 		Write-Host ""
 		Write-Host "Containers started!" -ForegroundColor Green
 		Write-Host "MongoDB: localhost:27017"
@@ -43,20 +49,20 @@ switch ($Command.ToLower()) {
 
 	"stop" {
 		Write-Host "Stopping Docker containers..." -ForegroundColor Yellow
-		docker-compose stop
+		docker compose stop
 		Write-Host "Done!" -ForegroundColor Green
 		break
 	}
 
 	"restart" {
 		Write-Host "Restarting Docker containers..." -ForegroundColor Yellow
-		docker-compose restart
+		docker compose restart
 		Write-Host "Done!" -ForegroundColor Green
 		break
 	}
 
 	"logs" {
-		docker-compose logs -f
+		docker compose logs -f
 		break
 	}
 
@@ -64,7 +70,7 @@ switch ($Command.ToLower()) {
 		Write-Host "WARNING: This will remove all containers and data volumes!" -ForegroundColor Red
 		$confirm = Read-Host "Are you sure? (y/n)"
 		if ($confirm -eq "y") {
-			docker-compose down -v
+			docker compose down -v
 			Write-Host "Cleaned!" -ForegroundColor Green
 		} else {
 			Write-Host "Cancelled." -ForegroundColor Yellow
@@ -77,11 +83,11 @@ switch ($Command.ToLower()) {
 		$confirm = Read-Host "Are you sure? (y/n)"
 		if ($confirm -eq "y") {
 			Write-Host "Removing old containers..." -ForegroundColor Yellow
-			docker-compose down -v
+			docker compose down -v
 			Write-Host "Building images..." -ForegroundColor Yellow
-			docker-compose build --no-cache
+			docker compose build --no-cache
 			Write-Host "Starting services..." -ForegroundColor Yellow
-			docker-compose up -d
+			docker compose up -d
 			Write-Host "Rebuilt and started!" -ForegroundColor Green
 		} else {
 			Write-Host "Cancelled." -ForegroundColor Yellow
@@ -90,7 +96,7 @@ switch ($Command.ToLower()) {
 	}
 
 	"status" {
-		docker ps --filter "name=mongodb|mssql|mongo-express"
+		docker compose ps
 		break
 	}
 
