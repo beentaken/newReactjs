@@ -4,7 +4,9 @@ namespace webapi.Model
 {
     public class Menu
     {
-        public string[] Title { get; set; }
+        public int Id { get; set; }
+
+        public string[]? Title { get; set; }
 
         public required string Role { get; set; }
     }

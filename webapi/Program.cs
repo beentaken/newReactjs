@@ -1,11 +1,27 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.EntityFrameworkCore;
+using webapi.Data;
+using webapi.Services;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
 builder.Configuration.AddJsonFile(configPath, optional: false, reloadOnChange: true);
 // Add services to the container.
+
+// Add DbContext with SQL Server
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register MongoDB Client
+builder.Services.AddSingleton<IMongoClient>(sp =>
+    new MongoClient("mongodb://admin:password@localhost:27017/?authSource=admin"));
+
+// Register seeding services
+builder.Services.AddScoped<DatabaseSeederService>();
+builder.Services.AddScoped<MongoDbSeederService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -91,8 +107,6 @@ app.UseAuthorization();
 app.UseCors("AllowReactApp");
 app.MapControllers();
 
-app.Run();
-
 app.UseRouting();
 
 var webSocketOptions = new WebSocketOptions
@@ -107,3 +121,31 @@ app.UseEndpoints(endpoints =>
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
 });
+
+// Seed databases on startup
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var sqlSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeederService>();
+        await sqlSeeder.SeedAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error seeding SQL database. Make sure MSSQL is running: docker-compose up -d");
+    }
+
+    try
+    {
+        var mongoSeeder = scope.ServiceProvider.GetRequiredService<MongoDbSeederService>();
+        await mongoSeeder.SeedAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error seeding MongoDB. Make sure MongoDB is running: docker-compose up -d");
+    }
+}
+
+app.Run();

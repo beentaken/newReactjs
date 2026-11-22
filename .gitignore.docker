@@ -1,0 +1,53 @@
+# Docker and Database Files
+.env
+.env.local
+.env.*.local
+
+# Docker volumes and data
+mongodb_data/
+mssql_data/
+mysql_data/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+bin/
+obj/
+*.dll
+*.exe
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache/options
+.vs/
+
+# Rider cache
+.idea/
+*.sln.iml
+
+# Node modules (if using npm scripts)
+node_modules/
+
+# logs
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Database backups
+*.bak
