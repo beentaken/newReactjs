@@ -23,9 +23,6 @@ import {
 import doorBlue from "../Images/door-blue.png";
 import { createCircleFeature } from "../Function/Featurecreation";
 
-// ================= API =================
-const API = "https://localhost:44317";
-
 // ================= FETCH HELPERS =================
 const fetchJson = async (url) => {
     const r = await fetch(url);
@@ -117,7 +114,7 @@ const OpenLayersImageMap = () => {
 
         try {
             const { blob, headers } = await fetchBlob(
-                `${API}/Archive/GetArchiveFile?filename=${encodeURIComponent(selectedFeature)}`
+                `/Archive/GetArchiveFile?filename=${encodeURIComponent(selectedFeature)}`
             );
 
             setBlobFile(blob);
@@ -145,9 +142,9 @@ const OpenLayersImageMap = () => {
         (async () => {
             try {
                 const [coords, archive64, options] = await Promise.all([
-                    fetchJson(`${API}/api/Minimap/GetCoordinates`),
-                    fetchJson(`${API}/Archive/GetArchive64`),
-                    fetchJson(`${API}/Archive/GetArchiveOptions`)
+                    fetchJson("/api/Minimap/GetCoordinates"),
+                    fetchJson("/Archive/GetArchive64"),
+                    fetchJson("/Archive/GetArchiveOptions")
                 ]);
 
                 setBase64File(archive64);

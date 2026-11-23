@@ -23,9 +23,6 @@ import {
 } from "@mui/material";
 import { Modify, Select as OlSelect } from "ol/interaction";
 
-// ================= API =================
-const API = "https://localhost:44317";
-
 // ================= FETCH HELPERS =================
 const fetchJson = async (url) => {
     const r = await fetch(url);
@@ -89,7 +86,7 @@ const MoveImageMap = () => {
 
         try {
             const { blob, headers } = await fetchBlob(
-                `${API}/Archive/GetArchiveFile?filename=${encodeURIComponent(selectedFeature)}`
+                `/Archive/GetArchiveFile?filename=${encodeURIComponent(selectedFeature)}`
             );
 
             setBlobFile(blob);
@@ -271,7 +268,7 @@ const MoveImageMap = () => {
             console.log("Sending updates to server:", updates);
 
             // Uncomment when you have API endpoint
-            // await fetch(`${API}/api/Minimap/UpdateCoordinates`, {
+            // await fetch("/api/Minimap/UpdateCoordinates", {
             //     method: 'POST',
             //     headers: { 'Content-Type': 'application/json' },
             //     body: JSON.stringify(updates)
@@ -292,9 +289,9 @@ const MoveImageMap = () => {
         (async () => {
             try {
                 const [coords, archive64, options] = await Promise.all([
-                    fetchJson(`${API}/api/Minimap/GetCoordinates`),
-                    fetchJson(`${API}/Archive/GetArchive64`),
-                    fetchJson(`${API}/Archive/GetArchiveOptions`)
+                    fetchJson("/api/Minimap/GetCoordinates"),
+                    fetchJson("/Archive/GetArchive64"),
+                    fetchJson("/Archive/GetArchiveOptions")
                 ]);
 
                 setBase64File(archive64);

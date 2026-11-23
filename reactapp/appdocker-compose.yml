@@ -1,13 +1,14 @@
-version: '3.8'
-
 services:
+  webapi:
+    build:
+      context: ../webapi
+      dockerfile: Dockerfile
+
   webapp:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "80:80"
-    environment:
-      - PORT=80
-    working_dir: /app
-    command: ["sh", "-c", "PORT=80 npm run start"]
+    depends_on:
+      - webapi

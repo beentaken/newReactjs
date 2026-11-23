@@ -48,7 +48,7 @@ const MiniMapIcons = () => {
 
     const fetchRandomCoordinates = async () => {
         try {
-            const response = await fetch('http://localhost:7048/api/minimap/GetCoordinates'); // Adjust port if needed
+            const response = await fetch('/api/minimap/GetCoordinates');
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
             return data;
@@ -60,7 +60,7 @@ const MiniMapIcons = () => {
 
     const fetchRandomCoordinate = async (id) => {
         try {
-            const response = await fetch(`http://localhost:7048/api/minimap/GetCoordinate/${id}`); // Include the id
+            const response = await fetch(`/api/minimap/GetCoordinate/${id}`);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
 
@@ -350,7 +350,7 @@ const MiniMapIcons = () => {
                 >
                     Toggle Door Color
                 </Button>
-                <img src="http://localhost:7048/Image/get-randomicons" alt="My Image" />
+                <img src="/Image/get-randomicons" alt="My Image" />
                 {JSON.stringify(dragCoord)}
             </Box>
             <div ref={mapRef} style={{ width: "100%", height: "calc(100vh - 64px)" }} />

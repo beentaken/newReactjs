@@ -37,7 +37,7 @@ const MiniMap = () => {
 
     const fetchRandomCoordinates = async () => {
         try {
-            const response = await fetch('http://localhost:7048/api/minimap/GetCoordinates'); // Adjust port if needed
+            const response = await fetch('/api/minimap/GetCoordinates');
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
             return data;
@@ -49,7 +49,7 @@ const MiniMap = () => {
 
     const fetchRandomCoordinate = async (id) => {
         try {
-            const response = await fetch(`http://localhost:7048/api/minimap/GetCoordinate/${id}`); // Include the id
+            const response = await fetch(`/api/minimap/GetCoordinate/${id}`);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
 

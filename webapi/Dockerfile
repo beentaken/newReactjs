@@ -16,5 +16,7 @@ WORKDIR /app
 EXPOSE 7048
 
 COPY --from=build /app/publish .
+COPY --from=build /src/Images ./Images
+COPY --from=build /src/public ./public
 
 ENTRYPOINT ["dotnet", "webapi.dll"]
