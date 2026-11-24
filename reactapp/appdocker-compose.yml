@@ -1,8 +1,4 @@
 services:
-  webapi:
-    build:
-      context: ../webapi
-      dockerfile: Dockerfile
 
   webapp:
     build:
